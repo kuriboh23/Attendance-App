@@ -4,4 +4,17 @@
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     </style>
+    <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
+        <!-- Set the splash screen background color -->
+        <item name="windowSplashScreenBackground">@color/Gunmetal</item>
+
+        <!-- Use your app logo/icon -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ow_c_logo</item>
+
+        <!-- Optional animation duration -->
+        <item name="windowSplashScreenAnimationDuration">200</item>
+
+        <!-- Set the theme of the Activity that follows your splash screen -->
+        <item name="postSplashScreenTheme">@style/Base.Theme.Project</item>
+    </style>
 </resources>
