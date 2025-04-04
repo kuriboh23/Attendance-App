@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="VividRed">#D90429</color>
+    <color name="CrimsonRed">#EF233C </color>
+    <color name="OffWhite">#EDF2F4 </color>
+    <color name="CoolGray">#8D99AE </color>
+    <color name="Gunmetal">#2B2D42</color>
 </resources>
