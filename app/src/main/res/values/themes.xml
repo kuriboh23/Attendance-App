@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Base.Theme.Project" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.Project" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
@@ -8,10 +8,10 @@
     <style name="Theme.Project" parent="Base.Theme.Project" />
     <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
         <!-- Set the splash screen background color -->
-        <item name="windowSplashScreenBackground">@color/VividRed</item>
+        <item name="windowSplashScreenBackground">@color/mainColor</item>
 
         <!-- Use your app logo/icon -->
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ow_c_logo</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ocp_logo</item>
 
         <!-- Optional animation duration -->
         <item name="windowSplashScreenAnimationDuration">200</item>
