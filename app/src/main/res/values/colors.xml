@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="secondColor">#009e8a</color>
-    <color name="mainColor">#13a438 </color>
-    <color name="textBlue">#0f4c80 </color>
-    <color name="CoolGray">#8D99AE </color>
+    <color name="white">#F9F7F7</color>
+    <color name="secondColor">#DBE2EF</color>
+    <color name="mainColor">#3F72AF </color>
+    <color name="darkBlue">#112D4E </color>
 
 </resources>
