@@ -18,7 +18,7 @@
         android:layout_marginHorizontal="18dp"
         android:background="@color/white"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="18dp">
+        >
 
         <TextView
             android:id="@+id/welcome"

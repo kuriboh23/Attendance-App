@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
-        <item>@font/</item>
         <item>@font/alfa_slab_one</item>
         <item>@font/dela_gothic_one</item>
         <item>@font/m_plus_rounded_1c_medium</item>
-        <item>@font/noto_sans_javanese_medium</item>
         <item>@font/raleway_black</item>
-        <item>@font/raleway_extrabold</item>
         <item>@font/raleway_medium</item>
         <item>@font/roboto</item>
     </array>
