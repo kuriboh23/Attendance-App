@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/ow_logo"
+        android:icon="@drawable/newlogo"
         android:label="@string/app_name"
         android:roundIcon="@drawable/ow_c_logo"
         android:supportsRtl="true"
