@@ -125,6 +125,7 @@
                     app:cardElevation="0dp">
 
                     <TextView
+                        android:id="@+id/checkBtnName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -177,7 +178,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="09:05 AM"
+                        android:text="00:00"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -217,7 +218,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="--:-- PM"
+                        android:text="00:00"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -247,8 +248,8 @@
 
                     <ImageView
                         android:id="@+id/imgTotalHours"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:src="@drawable/clock_done"
                          />
 
@@ -257,7 +258,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="3h 48m"
+                        android:text="0h 00m"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -286,7 +287,6 @@
         app:cardBackgroundColor="@android:color/white"
         app:cardCornerRadius="16dp"
         app:cardElevation="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardWorkType">
