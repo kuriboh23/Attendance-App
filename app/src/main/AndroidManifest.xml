@@ -13,6 +13,7 @@
         android:theme="@style/Theme.Project"
         tools:targetApi="31" >
 
+        <activity android:name=".HomeActivity"/>
         <activity android:name=".SignUp"/>
         <activity android:name=".SignIn"/>
 

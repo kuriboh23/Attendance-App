@@ -1,0 +1,4 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval"><!-- Light bluish background -->
+     <!-- Rounded edges -->
+</shape>

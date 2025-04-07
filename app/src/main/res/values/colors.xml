@@ -7,5 +7,6 @@
     <color name="mainColor">#3C67FD</color>
     <color name="darkBlue">#112D4E </color>
     <color name="gray">#D3D3D3 </color>
+    <color name="grayLight">#888888</color>
 
 </resources>
