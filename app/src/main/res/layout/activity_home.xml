@@ -35,6 +35,16 @@
 
 
     <!-- Work Type Card -->
+    <ImageView
+        android:id="@+id/ivProfile"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="24dp"
+        android:src="@drawable/ow_c_logo"
+        app:layout_constraintBottom_toBottomOf="@+id/tvAttendancePrompt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardWorkType"
         android:layout_width="match_parent"
@@ -237,8 +247,8 @@
 
                     <ImageView
                         android:id="@+id/imgTotalHours"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
                         android:src="@drawable/clock_done"
                          />
 
