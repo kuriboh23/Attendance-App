@@ -1,6 +1,5 @@
 package com.example.project
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -21,7 +20,7 @@ class SignIn:AppCompatActivity() {
             finish()
         }
         login.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
+            val intent = Intent(this, HomeActivity00::class.java)
             startActivity(intent)
         }
     }
