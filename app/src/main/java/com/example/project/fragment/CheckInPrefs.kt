@@ -44,6 +44,10 @@ object CheckInPrefs {
         )
     }
 
+    fun resetCheckInData(context: Context) {
+        getPrefs(context).edit().clear().apply()
+    }
+
     data class CheckInData(
         val isCheckedIn: Boolean,
         val checkInMillis: Long,
