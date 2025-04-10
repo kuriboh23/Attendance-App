@@ -9,6 +9,6 @@ data class Check(
     val date: Long,
     val checkInTime: String,
     val checkOutTime: String,
-    val duration: String?,
+    val durationInSecond: Long,
     val isCompleted: Boolean = false
 )

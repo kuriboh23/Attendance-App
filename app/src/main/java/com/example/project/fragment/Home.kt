@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,12 +31,21 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+import androidx.fragment.app.viewModels
+import com.example.project.view.HomeViewModel
+import kotlin.properties.Delegates
+
 class Home : Fragment() {
 
     private val requiredQrText = "Yakuza"
 
     private var checkInTime: Long? = null
-    private var isFirstCheckout = true // Flag to track the first checkout scan
+
+//    val savedData = CheckInPrefs.loadCheckInState(requireContext())
+
+    var isFirstCheckout = true
+    private var isCheckedIn = false
+
     private val timeFormatterHM = SimpleDateFormat("hh:mm a", Locale.getDefault())
     private val timeFormatter = SimpleDateFormat("hh:mm:ss a", Locale.getDefault())
 
@@ -94,7 +104,6 @@ class Home : Fragment() {
 
         attendanceViewModel = ViewModelProvider(this)[AttendanceViewModel::class.java]
 
-
         checkInTimeText = view.findViewById(R.id.tvCheckInTime)
         checkOutTimeText = view.findViewById(R.id.tvCheckOutTime)
         durationText = view.findViewById(R.id.tvTotalHours)
@@ -107,6 +116,12 @@ class Home : Fragment() {
 
         currentDate.text = "$month $day, $year - $dayName"
 
+        profileImg.setOnClickListener {
+        attendanceViewModel.deleteAllChecks()
+            CheckInPrefs.resetCheckInData(requireContext())
+            Toast.makeText(requireContext(), "Check-in data reset", Toast.LENGTH_SHORT).show()
+//            updateUI()
+        }
 
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
             != PackageManager.PERMISSION_GRANTED
@@ -116,11 +131,17 @@ class Home : Fragment() {
             startQrScan()
         }
 
+        println("1: $isCheckedIn")
+
+
         val savedState = CheckInPrefs.loadCheckInState(requireContext())
+
+        isFirstCheckout = savedState.isFirstCheckOut
 
         if (savedState.checkInStr != null) {
             checkInTimeText.text = savedState.checkInStr
             checkInTime = if (savedState.isCheckedIn) savedState.checkInMillis else null
+            isCheckedIn = savedState.isCheckedIn
         }
         if (savedState.checkOutStr != null) {
             checkOutTimeText.text = savedState.checkOutStr
@@ -138,6 +159,8 @@ class Home : Fragment() {
             scanButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mainColor))
             cardCheckInButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.secondColor))
         }
+
+        println("2: $isCheckedIn")
 
         return view
     }
@@ -162,27 +185,38 @@ class Home : Fragment() {
     private fun handleQrResult(scannedText: String) {
         if (scannedText == requiredQrText) {
             val now = System.currentTimeMillis()
-            if (checkInTime == null) {
+            if (isCheckedIn == false) {
                 // First scan: Check-in
                 checkInTime = now
                 val checkInString = timeFormatterHM.format(Date(now))
                 checkInTimeText.text = checkInString
                 checkBtnName.text = "Check Out"
-                CheckInPrefs.saveCheckIn(requireContext(), true, now, checkInString)
+
+                isCheckedIn = true
+                CheckInPrefs.saveCheckIn(requireContext(), true, now,checkInString)
+                CheckInPrefs.saveCheckOut(requireContext(),true, "00:00", "00:00")
 
                 checkOutTimeText.text = "00:00"
+                durationText.text = "00:00"
 
                 scanButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.checkOut))
                 cardCheckInButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.checkOutLight))
+
+                println("First scan: Check-in $isCheckedIn")
+
             } else {
                 // Second scan: Check-out
-                if (isFirstCheckout) {
-                    isFirstCheckout = false
-                    checkOutFunction()
-                } else {
-                    checkOutFunction()
-                    updateUI()
-                }
+                checkOutFunction()
+
+//                if (isFirstCheckout) {
+//                    CheckInPrefs.saveIsFirstCheckout(requireContext(),false)
+//                    isFirstCheckout = false
+//
+//                    checkOutFunction()
+//                } else {
+//                    checkOutFunction()
+//                    updateUI()
+//                }
             }
         } else {
             Toast.makeText(requireContext(), "Invalid QR Code", Toast.LENGTH_SHORT).show()
@@ -191,21 +225,22 @@ class Home : Fragment() {
 
     private fun checkOutFunction(){
         val now = System.currentTimeMillis()
-        val checkOutTimeMillis = now
-        val checkOutString = timeFormatterHM.format(Date(checkOutTimeMillis))
+        val checkOutString = timeFormatterHM.format(Date(now))
         checkOutTimeText.text = checkOutString
         checkBtnName.text = "Check In"
 
-        val durationMillis = checkOutTimeMillis - (checkInTime ?: 0L)
+        val durationMillis = now - (checkInTime ?: 0L)
         val durationInSeconds = durationMillis / 1000
         val hours = durationInSeconds / 3600
         val minutes = (durationInSeconds % 3600) / 60
         val durationStr = "${hours}h ${minutes}m"
         durationText.text = durationStr
 
-        CheckInPrefs.saveCheckOut(requireContext(), checkOutString, durationStr)
+        CheckInPrefs.saveCheckOut(requireContext(), false,checkOutString, durationStr)
 
         checkInTime = null
+        isCheckedIn = false
+
         scanButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mainColor))
         cardCheckInButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.secondColor))
 
@@ -213,21 +248,14 @@ class Home : Fragment() {
         val NewsavedState = CheckInPrefs.loadCheckInState(requireContext())
         var checkInTimeMillis = NewsavedState.checkInStr
         checkInTimeMillis = checkInTimeMillis.toString()
-        insertCheckToDatabase(now, checkInTimeMillis, checkOutString, durationStr)
+        insertCheckToDatabase(now, checkInTimeMillis, checkOutString, durationInSeconds)
 
-        // Reset check-in data after second check-out scan
-        CheckInPrefs.resetCheckInData(requireContext())
-        Toast.makeText(requireContext(), "Check-in data reset", Toast.LENGTH_SHORT).show()
+        println("second scan: Check-out $checkInTime, $now, $durationInSeconds, $isCheckedIn")
 
-        // Refresh the Fragment and update UI
-        val transaction = parentFragmentManager.beginTransaction()
-        transaction.detach(this)
-        transaction.attach(this)
-        transaction.commit()
     }
 
-    private fun insertCheckToDatabase(date: Long, checkInTime: String, checkOutTime: String, duration: String) {
-        val check = Check(0, date, checkInTime, checkOutTime, duration)
+    private fun insertCheckToDatabase(date: Long, checkInTime: String, checkOutTime: String, durationInSecond: Long) {
+        val check = Check(0, date, checkInTime, checkOutTime, durationInSecond)
         attendanceViewModel.addCheck(check)
         Toast.makeText(requireContext(), "Successfully added!", Toast.LENGTH_LONG).show()
     }
@@ -256,16 +284,10 @@ class Home : Fragment() {
         checkInTimeText.text = savedState.checkInStr ?: "00:00"
         checkOutTimeText.text = savedState.checkOutStr ?: "00:00"
         durationText.text = savedState.duration ?: "0h 0m"
-        checkInTime = null
 
-        if (savedState.isCheckedIn) {
-            checkBtnName.text = "Check Out"
-            scanButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.checkOut))
-            cardCheckInButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.checkOutLight))
-        } else {
-            checkBtnName.text = "Check In"
-            scanButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mainColor))
-            cardCheckInButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.secondColor))
-        }
+        // Reset check-in data after second check-out scan
+        CheckInPrefs.resetCheckInData(requireContext())
+        Toast.makeText(requireContext(), "Check-in data reset", Toast.LENGTH_SHORT).show()
+
     }
 }

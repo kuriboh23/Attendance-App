@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +19,7 @@ class Attendance : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var checkAdapter: CheckAdapter
     private lateinit var attendanceViewModel: AttendanceViewModel
+    private lateinit var img: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,6 +29,7 @@ class Attendance : Fragment() {
         val view = inflater.inflate(R.layout.fragment_attendance, container, false)
 
         recyclerView = view.findViewById(R.id.RecView)
+        img = view.findViewById(R.id.filterMouth)
 
         //RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -36,6 +39,12 @@ class Attendance : Fragment() {
         attendanceViewModel = ViewModelProvider(this)[AttendanceViewModel::class.java]
         attendanceViewModel.allAttendances.observe(viewLifecycleOwner) { check ->
             checkAdapter.setData(check)
+        }
+
+        //Delete All Table
+        img.setOnClickListener {
+
+        attendanceViewModel.deleteAllChecks()
         }
 
         return view

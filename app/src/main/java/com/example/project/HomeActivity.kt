@@ -18,27 +18,21 @@ class HomeActivity : AppCompatActivity() {
         navButton = findViewById(R.id.bottomNavigationView)
         navButton.itemIconTintList = null
 
-        loadFragment(Home(), false)
+        loadFragment(Home())
 
         navButton.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.nav_home -> loadFragment(Home(), false)
-                R.id.nav_attendance -> loadFragment(Attendance(), false)
+                R.id.nav_home -> loadFragment(Home())
+                R.id.nav_attendance -> loadFragment(Attendance())
             }
             true
         }
     }
 
-    private fun loadFragment(fragment: Fragment, addToBackStack: Boolean) {
+    private fun loadFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
             .replace(R.id.frameLayout, fragment)
 
-        if (addToBackStack) {
-            transaction.addToBackStack(null)
-        } else {
-            // Clear back stack so Home becomes the root
-            supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        }
 
         transaction.commit()
         updateBottomNavSelection(fragment)
@@ -54,7 +48,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onBackPressed() {
         val currentFragment = supportFragmentManager.findFragmentById(R.id.frameLayout)
         if (currentFragment !is Home) {
-            loadFragment(Home(), false) // Go directly to Home
+            loadFragment(Home()) // Go directly to Home
         } else {
             super.onBackPressed() // Exit app
         }

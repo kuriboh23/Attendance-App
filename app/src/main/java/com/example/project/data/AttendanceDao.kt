@@ -14,4 +14,7 @@ interface AttendanceDao {
     @Query("SELECT * FROM check_table ORDER BY id ASC")
     fun readAllChecks():LiveData<List<Check>>
 
+    @Query("DELETE FROM check_table")
+    fun deleteAllChecks()
+
 }

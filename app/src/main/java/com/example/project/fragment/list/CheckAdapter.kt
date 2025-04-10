@@ -37,7 +37,11 @@ class CheckAdapter : RecyclerView.Adapter<CheckAdapter.CheckViewHolder>() {
          holder.txDayText.text = formatDateName(currentItem.date)
          holder.tvCheckInTime.text = currentItem.checkInTime
          holder.tvCheckOutTime.text = currentItem.checkOutTime
-         holder.tvTotalHours.text = currentItem.duration
+        val durationInSeconds = currentItem.durationInSecond
+        val hours = durationInSeconds / 3600
+        val minutes = (durationInSeconds % 3600) / 60
+        val durationStr = "${hours}h ${minutes}m"
+         holder.tvTotalHours.text =durationStr
     }
 
     override fun getItemCount(): Int = checkList.size

@@ -26,10 +26,10 @@ class AttendanceViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-//    fun clearDatabase() {
-//        viewModelScope.launch {
-//            repository.deleteAllChecks()
-//        }
-//    }
+    fun deleteAllChecks() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllChecks()
+        }
+    }
 
 }

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_marginBottom="10dp"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -15,18 +16,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:id="@+id/linearLayout2"
+        <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            app:cardBackgroundColor="@color/gray"
+            app:cardCornerRadius="12dp"
+            android:layout_gravity="center"
+            app:cardElevation="0dp">
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_gravity="center"
-            android:layout_marginStart="8dp"
+            android:padding="12dp"
 
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints">
+
 
             <TextView
                 android:id="@+id/txDayNum"
@@ -34,8 +46,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
 
-                android:textColor="@color/darkBlue"
-                android:fontFamily="@font/poppins"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:fontFamily="@font/poppins_semibold"
                 android:text="07" />
 
             <TextView
@@ -43,10 +56,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:textColor="@color/darkBlue"
-                android:fontFamily="@font/poppins"
+                android:textColor="@color/black"
+                android:fontFamily="@font/poppins_semibold"
                 android:text="Mon" />
         </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
         <!-- Check In Section -->
         <LinearLayout
@@ -54,32 +68,34 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:layout_gravity="center"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/imgCheckIn"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/clock_in"
-                app:tint="#8EB8AC" />
+                android:src="@drawable/clock_in"/>
+<!--                app:tint="#8EB8AC" />-->
 
             <TextView
                 android:id="@+id/tvCheckInTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/poppins"
                 android:text="00:00"
                 android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="14sp"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:text="Check In"
                 android:textColor="@color/grayLight"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
         </LinearLayout>
 
         <!-- Divider -->
@@ -94,32 +110,33 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:layout_gravity="center"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/imgCheckOut"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/clock_out"
-                app:tint="#F08080" />
+                android:src="@drawable/clock_out"/>
+<!--                app:tint="#F08080" />-->
 
             <TextView
                 android:id="@+id/tvCheckOutTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/poppins"
                 android:text="00:00"
                 android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="14sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:text="Check Out"
                 android:textColor="@color/grayLight"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
         </LinearLayout>
 
         <!-- Divider -->
@@ -133,6 +150,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_gravity="center"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -140,30 +158,26 @@
                 android:id="@+id/imgTotalHours"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/clock_done" />
+                android:src="@drawable/clock_done_v2" />
 
             <TextView
                 android:id="@+id/tvTotalHours"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:text="0h 00m"
+                android:fontFamily="@font/poppins"
                 android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="14sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:text="Total Hrs"
                 android:textColor="@color/grayLight"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
-
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

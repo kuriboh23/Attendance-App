@@ -9,8 +9,8 @@ class AttendanceRepository(private val attendanceDao: AttendanceDao) {
         attendanceDao.insertCheck(check)
     }
 
-//    suspend fun deleteAllChecks(){
-//        attendanceDao.deleteAllChecks()
-//    }
+    fun deleteAllChecks(){
+        attendanceDao.deleteAllChecks()
+    }
 
 }
