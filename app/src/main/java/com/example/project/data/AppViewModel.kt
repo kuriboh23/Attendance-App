@@ -29,6 +29,10 @@ class CheckViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun getChecksUserByDate(date: String, userId: Long): LiveData<List<Check>> {
+        return repository.getChecksUserByDate(date, userId)
+    }
+
     fun deleteAllChecks() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAllChecks()
@@ -61,4 +65,32 @@ class UserViewModel(application: Application): AndroidViewModel(application){
         }
     }
 
+}
+
+class TimeManagerViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val repository: TimeManagerRepository
+    val allTimeManagers: LiveData<List<TimeManager>>
+
+    init {
+        val timeManagerDao = AppDatabase.getDatabase(application).timeManagerDao()
+        repository = TimeManagerRepository(timeManagerDao)
+        allTimeManagers = repository.allTimeManagers
+    }
+    fun getAllUserTimeManagers(userId: Long): LiveData<List<TimeManager>> {
+        return repository.getAllUserTimeManagers(userId)
+    }
+    fun insertTimeManager(timeManager: TimeManager) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.insertTimeManager(timeManager)
+        }
+    }
+    fun deleteAllTimeManagers() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllTimeManagers()
+        }
+    }
+    fun getChecksByDate(date: String, userId: Long): LiveData<List<TimeManager>> {
+        return repository.getChecksByDate(date, userId)
+    }
 }

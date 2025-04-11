@@ -14,6 +14,9 @@ interface CheckDao {
     @Query("SELECT * FROM check_table WHERE :user_id == userId ORDER BY id ASC")
     fun getAllUserChecks(user_id:Long):LiveData<List<Check>>
 
+    @Query("SELECT * FROM check_table WHERE date == :date AND :user_id == userId ORDER BY id ASC")
+    fun getChecksUserByDate(date: String, user_id:Long): LiveData<List<Check>>
+
     @Query("SELECT * FROM check_table ORDER BY id ASC")
     fun getAllChecks():LiveData<List<Check>>
 
@@ -35,4 +38,25 @@ interface UserDao {
     @Query("DELETE FROM users WHERE id = :userId")
     fun deleteUserById(userId: Long)
 
+}
+
+@Dao
+interface TimeManagerDao {
+
+    @Insert
+    suspend fun insertTimeManager(timeManager: TimeManager):Long
+
+    @Query("SELECT * FROM time_manager")
+    fun getAllTimeManagers(): LiveData<List<TimeManager>>
+
+    @Query("DELETE FROM time_manager")
+    fun deleteAllTimeManagers()
+
+    // Fixing query for fetching all time managers by userId
+    @Query("SELECT * FROM time_manager WHERE userId = :user_id ORDER BY id ASC")
+    fun getAllUserTimeManagers(user_id: Long): LiveData<List<TimeManager>>
+
+    // Fixing query for fetching checks by date and userId
+    @Query("SELECT * FROM time_manager WHERE date = :date AND userId = :user_id ORDER BY id ASC")
+    fun getChecksByDate(date: String, user_id: Long): LiveData<List<TimeManager>>
 }

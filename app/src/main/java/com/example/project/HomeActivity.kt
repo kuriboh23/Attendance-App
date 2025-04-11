@@ -8,9 +8,7 @@ import androidx.fragment.app.Fragment
 import com.example.project.fragment.Attendance
 import com.example.project.fragment.Home
 import com.example.project.R
-import com.example.project.data.UserViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.FirebaseAuth
 
 class HomeActivity : AppCompatActivity() {
 
@@ -39,10 +37,14 @@ class HomeActivity : AppCompatActivity() {
 
     private fun signOut() {
         UserPrefs.clearUserId(this)
-        val intent = Intent(this, MainActivity::class.java)
+
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
         startActivity(intent)
         finish()
     }
+
 
     private fun loadFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()

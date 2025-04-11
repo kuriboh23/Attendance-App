@@ -5,11 +5,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities =[Check::class, User::class], version = 1,exportSchema = false)
+@Database(entities =[Check::class, TimeManagerDao::class, User::class], version = 1,exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
 
     abstract fun checkDao(): CheckDao
     abstract fun userDao(): UserDao
+    abstract fun timeManagerDao(): TimeManagerDao
 
     companion object {
         @Volatile

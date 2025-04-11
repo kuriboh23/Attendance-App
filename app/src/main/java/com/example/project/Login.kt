@@ -53,6 +53,7 @@ class Login:AppCompatActivity() {
         userViewModel.allUsers.observe(this) { users ->
             val user = users.find { it.email == email }
             if (user != null) {
+
                 // User found, proceed with login
                 if (user.password == password) {
                 val savedUserId = user.id
@@ -63,6 +64,11 @@ class Login:AppCompatActivity() {
                     val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)
                     finish()
+                }
+                else{
+                    Toast.makeText(this, "Incorrect password", Toast.LENGTH_SHORT).show()
+                    binding.txPassword.text?.clear()
+                    binding.txPassword.requestFocus()
                 }
             }
             else{

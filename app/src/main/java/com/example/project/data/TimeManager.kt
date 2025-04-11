@@ -1,12 +1,13 @@
 package com.example.project.data
 
+
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "check_table",
+    tableName = "time_manager",
     foreignKeys = [
         ForeignKey(
             entity = User::class,
@@ -14,14 +15,13 @@ import androidx.room.PrimaryKey
             childColumns = ["userId"],
             onDelete = ForeignKey.CASCADE
         )
-
     ]
 )
-data class Check(
+data class TimeManager(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val date: String,
-    val checkInTime: String,
-    val checkOutTime: String,
-    val durationInSecond: Long,
+    val workTime: Int,
+    val extraTime: Int,
+    val absent: Int,
     @ColumnInfo(name = "userId") val userId: Long
 )

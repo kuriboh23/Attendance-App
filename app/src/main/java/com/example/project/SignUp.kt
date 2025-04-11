@@ -30,14 +30,15 @@ class SignUp:AppCompatActivity() {
         }
 
         binding.signupBtn.setOnClickListener {
-            val fullName = binding.fullNameInput.text.toString()
+            val firstName = binding.nameInput.text.toString()
+            val lastName = binding.lastNameInput.text.toString()
             val email = binding.emailInput.text.toString()
             val password = binding.passwordTxt.text.toString()
             val confirmPassword = binding.confirmPasswordTxt.text.toString()
             val role = "user"
-            if (fullName.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()){
+            if (firstName.isNotEmpty() && lastName.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()){
                 if (password == confirmPassword){
-                    val user = User(0, fullName, email, password, role)
+                    val user = User(0, firstName, lastName, email, password, role,8)
                     insertUser(user)
                     val intent = Intent(this, Login::class.java)
                     startActivity(intent)
@@ -47,7 +48,6 @@ class SignUp:AppCompatActivity() {
                 }
             }
         }
-
     }
 
     private fun insertUser(user: User) {
