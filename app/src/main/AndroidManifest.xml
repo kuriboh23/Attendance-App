@@ -21,15 +21,13 @@
 
         <activity android:name=".HomeActivity"/>
         <activity android:name=".SignUp"/>
-        <activity android:name=".SignIn"/>
+        <activity android:name=".Login"/>
         <activity android:name=".ScanActivity"
             android:screenOrientation="portrait"/>
 
 
         <activity
-            android:name=".GuestActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Project" />
+            android:name=".GuestActivity" />
 
         <activity
             android:name=".MainActivity"

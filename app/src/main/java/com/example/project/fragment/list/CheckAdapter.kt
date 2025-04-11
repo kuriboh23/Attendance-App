@@ -32,7 +32,7 @@ class CheckAdapter : RecyclerView.Adapter<CheckAdapter.CheckViewHolder>() {
 
     override fun onBindViewHolder(holder: CheckViewHolder, position: Int) {
         val currentItem = checkList[position]
-        // Example usage:
+
          holder.txDayNum.text = formatDateNum(currentItem.date)
          holder.txDayText.text = formatDateName(currentItem.date)
          holder.tvCheckInTime.text = currentItem.checkInTime

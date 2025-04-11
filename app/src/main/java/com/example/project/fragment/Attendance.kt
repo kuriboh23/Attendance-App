@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project.R
-import com.example.project.data.AttendanceViewModel
+import com.example.project.data.CheckViewModel
 import com.example.project.fragment.list.CheckAdapter
 
 
@@ -18,7 +18,7 @@ class Attendance : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var checkAdapter: CheckAdapter
-    private lateinit var attendanceViewModel: AttendanceViewModel
+    private lateinit var attendanceViewModel: CheckViewModel
     private lateinit var img: ImageView
 
     override fun onCreateView(
@@ -36,15 +36,9 @@ class Attendance : Fragment() {
         checkAdapter = CheckAdapter()
         recyclerView.adapter = checkAdapter
 
-        attendanceViewModel = ViewModelProvider(this)[AttendanceViewModel::class.java]
+        attendanceViewModel = ViewModelProvider(this)[CheckViewModel::class.java]
         attendanceViewModel.allAttendances.observe(viewLifecycleOwner) { check ->
             checkAdapter.setData(check)
-        }
-
-        //Delete All Table
-        img.setOnClickListener {
-
-        attendanceViewModel.deleteAllChecks()
         }
 
         return view

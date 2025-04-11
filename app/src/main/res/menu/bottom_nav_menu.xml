@@ -16,7 +16,7 @@
         android:icon="@drawable/ic_attend_selector"
         android:title="Profile"/>
     <item
-        android:id="@+id/nav_settings"
+        android:id="@+id/nav_signOut"
         android:icon="@drawable/ic_home_selector"
-        android:title="Settings"/>
+        android:title="Sign Out"/>
 </menu>

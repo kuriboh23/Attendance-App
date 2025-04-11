@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,23 +16,18 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+
 import com.example.project.CheckInPrefs
 import com.example.project.R
 import com.example.project.ScanActivity
-import com.example.project.data.AttendanceViewModel
+import com.example.project.UserPrefs
+import com.example.project.data.CheckViewModel
 import com.example.project.data.Check
-import com.example.project.fragment.list.CheckAdapter
+import com.example.project.data.UserViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
-import androidx.fragment.app.viewModels
-import com.example.project.view.HomeViewModel
-import kotlin.properties.Delegates
 
 class Home : Fragment() {
 
@@ -43,7 +37,6 @@ class Home : Fragment() {
 
 //    val savedData = CheckInPrefs.loadCheckInState(requireContext())
 
-    var isFirstCheckout = true
     private var isCheckedIn = false
 
     private val timeFormatterHM = SimpleDateFormat("hh:mm a", Locale.getDefault())
@@ -74,8 +67,10 @@ class Home : Fragment() {
     private lateinit var cardCheckInButton: CardView
     private lateinit var profileImg: ImageView
 
-    private lateinit var attendanceViewModel: AttendanceViewModel
+    private lateinit var attendanceViewModel: CheckViewModel
+    private lateinit var userViewModel: UserViewModel
 
+    private lateinit var userId:String
 
     private val cameraPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -102,7 +97,8 @@ class Home : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        attendanceViewModel = ViewModelProvider(this)[AttendanceViewModel::class.java]
+        attendanceViewModel = ViewModelProvider(this)[CheckViewModel::class.java]
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
 
         checkInTimeText = view.findViewById(R.id.tvCheckInTime)
         checkOutTimeText = view.findViewById(R.id.tvCheckOutTime)
@@ -113,6 +109,8 @@ class Home : Fragment() {
         checkBtnName = view.findViewById(R.id.checkBtnName)
         cardCheckInButton = view.findViewById(R.id.cardCheckInButton)
         profileImg = view.findViewById(R.id.ivProfile)
+
+        val tvGreeting = view.findViewById<TextView>(R.id.tvGreeting)
 
         currentDate.text = "$month $day, $year - $dayName"
 
@@ -131,12 +129,7 @@ class Home : Fragment() {
             startQrScan()
         }
 
-        println("1: $isCheckedIn")
-
-
         val savedState = CheckInPrefs.loadCheckInState(requireContext())
-
-        isFirstCheckout = savedState.isFirstCheckOut
 
         if (savedState.checkInStr != null) {
             checkInTimeText.text = savedState.checkInStr
@@ -160,7 +153,13 @@ class Home : Fragment() {
             cardCheckInButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.secondColor))
         }
 
-        println("2: $isCheckedIn")
+        userId = UserPrefs.loadUserId(requireContext()).toString()
+
+        userViewModel.getUserById(userId.toLong()).observe(viewLifecycleOwner) { user ->
+            val fullName = user.fullName
+            val lastName = fullName.substringAfterLast(" ")
+            tvGreeting.text = "Hey, $lastName"
+        }
 
         return view
     }
@@ -201,8 +200,6 @@ class Home : Fragment() {
 
                 scanButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.checkOut))
                 cardCheckInButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.checkOutLight))
-
-                println("First scan: Check-in $isCheckedIn")
 
             } else {
                 // Second scan: Check-out
@@ -249,13 +246,10 @@ class Home : Fragment() {
         var checkInTimeMillis = NewsavedState.checkInStr
         checkInTimeMillis = checkInTimeMillis.toString()
         insertCheckToDatabase(now, checkInTimeMillis, checkOutString, durationInSeconds)
-
-        println("second scan: Check-out $checkInTime, $now, $durationInSeconds, $isCheckedIn")
-
     }
 
     private fun insertCheckToDatabase(date: Long, checkInTime: String, checkOutTime: String, durationInSecond: Long) {
-        val check = Check(0, date, checkInTime, checkOutTime, durationInSecond)
+        val check = Check(0, date, checkInTime, checkOutTime, durationInSecond,userId.toLong())
         attendanceViewModel.addCheck(check)
         Toast.makeText(requireContext(), "Successfully added!", Toast.LENGTH_LONG).show()
     }

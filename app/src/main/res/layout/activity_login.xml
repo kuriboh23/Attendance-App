@@ -107,21 +107,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/emailInput" />
 
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/passwordInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/editext_background"
-            android:fontFamily="@font/poppins"
+            app:passwordToggleEnabled="true"
             android:hint="Create password"
-
-            android:inputType="textPassword"
-            android:textColor="@color/gray_black"
             android:textColorHint="@color/gray_black"
-            android:textSize="16sp"
+            app:passwordToggleTint="@color/gray_black"
 
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/passwordTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/passwordTitle" >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/editext_background"
+                android:fontFamily="@font/poppins"
+
+                android:inputType="textPassword"
+                android:textColor="@color/gray_black"
+                android:textSize="16sp"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <CheckBox
             android:id="@+id/privacyChekbox"
@@ -197,6 +206,38 @@
                 android:textColor="#000000"
                 android:textSize="16sp" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/signUpText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+
+            android:layout_marginBottom="32dp"
+            android:fontFamily="@font/poppins"
+            android:paddingEnd="8dp"
+            android:text="Don't have an account?"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/signUpLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+
+            android:text="Sign Up"
+            android:textColor="@color/mainColor"
+            android:textStyle="bold"
+
+            app:layout_constraintBottom_toBottomOf="@+id/signUpText"
+            app:layout_constraintStart_toEndOf="@+id/signUpText"
+            app:layout_constraintTop_toTopOf="@+id/signUpText" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
