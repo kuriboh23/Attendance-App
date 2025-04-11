@@ -116,7 +116,7 @@ class Home : Fragment() {
 
         profileImg.setOnClickListener {
         attendanceViewModel.deleteAllChecks()
-            CheckInPrefs.resetCheckInData(requireContext())
+            CheckInPrefs.resetCheckInData(requireContext(),userId)
             Toast.makeText(requireContext(), "Check-in data reset", Toast.LENGTH_SHORT).show()
 //            updateUI()
         }
@@ -129,7 +129,9 @@ class Home : Fragment() {
             startQrScan()
         }
 
-        val savedState = CheckInPrefs.loadCheckInState(requireContext())
+        userId = UserPrefs.loadUserId(requireContext()).toString()
+
+        val savedState = CheckInPrefs.loadCheckInState(requireContext(),userId)
 
         if (savedState.checkInStr != null) {
             checkInTimeText.text = savedState.checkInStr
@@ -152,8 +154,6 @@ class Home : Fragment() {
             scanButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mainColor))
             cardCheckInButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.secondColor))
         }
-
-        userId = UserPrefs.loadUserId(requireContext()).toString()
 
         userViewModel.getUserById(userId.toLong()).observe(viewLifecycleOwner) { user ->
             val fullName = user.fullName
@@ -192,8 +192,8 @@ class Home : Fragment() {
                 checkBtnName.text = "Check Out"
 
                 isCheckedIn = true
-                CheckInPrefs.saveCheckIn(requireContext(), true, now,checkInString)
-                CheckInPrefs.saveCheckOut(requireContext(),true, "00:00", "00:00")
+                CheckInPrefs.saveCheckIn(requireContext(),userId, true, now,checkInString)
+                CheckInPrefs.saveCheckOut(requireContext(),userId,true, "00:00", "00:00")
 
                 checkOutTimeText.text = "00:00"
                 durationText.text = "00:00"
@@ -233,7 +233,7 @@ class Home : Fragment() {
         val durationStr = "${hours}h ${minutes}m"
         durationText.text = durationStr
 
-        CheckInPrefs.saveCheckOut(requireContext(), false,checkOutString, durationStr)
+        CheckInPrefs.saveCheckOut(requireContext(),userId, false,checkOutString, durationStr)
 
         checkInTime = null
         isCheckedIn = false
@@ -242,7 +242,7 @@ class Home : Fragment() {
         cardCheckInButton.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.secondColor))
 
         // Insert check-out data into database
-        val NewsavedState = CheckInPrefs.loadCheckInState(requireContext())
+        val NewsavedState = CheckInPrefs.loadCheckInState(requireContext(),userId)
         var checkInTimeMillis = NewsavedState.checkInStr
         checkInTimeMillis = checkInTimeMillis.toString()
         insertCheckToDatabase(now, checkInTimeMillis, checkOutString, durationInSeconds)
@@ -272,15 +272,17 @@ class Home : Fragment() {
 
     // New method to manually update UI after resetting check-in data
     private fun updateUI() {
-        val savedState = CheckInPrefs.loadCheckInState(requireContext())
+        val savedState = CheckInPrefs.loadCheckInState(requireContext(),userId)
 
         // Reset the text values based on the new state
         checkInTimeText.text = savedState.checkInStr ?: "00:00"
         checkOutTimeText.text = savedState.checkOutStr ?: "00:00"
         durationText.text = savedState.duration ?: "0h 0m"
+        checkBtnName.text = if (savedState.isCheckedIn) "Check Out" else "Check In"
+        isCheckedIn = savedState.isCheckedIn
 
         // Reset check-in data after second check-out scan
-        CheckInPrefs.resetCheckInData(requireContext())
+        CheckInPrefs.resetCheckInData(requireContext(),userId)
         Toast.makeText(requireContext(), "Check-in data reset", Toast.LENGTH_SHORT).show()
 
     }

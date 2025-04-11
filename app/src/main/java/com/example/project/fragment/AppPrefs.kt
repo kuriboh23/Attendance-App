@@ -12,12 +12,13 @@ object CheckInPrefs {
     private const val KEY_CHECK_OUT_STR = "check_out_str"
     private const val KEY_DURATION = "duration"
 
-    private fun getCheckPrefs(context: Context): SharedPreferences {
-        return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+    private fun getCheckPrefs(context: Context, userId: String): SharedPreferences {
+        val userPrefName = "${PREF_NAME}_$userId"
+        return context.getSharedPreferences(userPrefName, Context.MODE_PRIVATE)
     }
 
-    fun saveCheckIn(context: Context, isCheckedIn: Boolean, timeMillis: Long, timeStr: String) {
-        getCheckPrefs(context).edit().apply {
+    fun saveCheckIn(context: Context, userId: String, isCheckedIn: Boolean, timeMillis: Long, timeStr: String) {
+        getCheckPrefs(context, userId).edit().apply {
             putBoolean(KEY_CHECKED_IN, isCheckedIn)
             putString(KEY_CHECK_IN_STR, timeStr)
             putLong(KEY_CHECK_IN_TIME, timeMillis)
@@ -25,8 +26,8 @@ object CheckInPrefs {
         }
     }
 
-    fun saveCheckOut(context: Context,isCheckedIn: Boolean, checkOutStr: String, durationStr: String) {
-        getCheckPrefs(context).edit().apply {
+    fun saveCheckOut(context: Context, userId: String, isCheckedIn: Boolean, checkOutStr: String, durationStr: String) {
+        getCheckPrefs(context, userId).edit().apply {
             putBoolean(KEY_CHECKED_IN, isCheckedIn)
             putString(KEY_CHECK_OUT_STR, checkOutStr)
             putString(KEY_DURATION, durationStr)
@@ -34,15 +35,8 @@ object CheckInPrefs {
         }
     }
 
-//    fun saveIsFirstCheckout(context: Context,isFirstCheckOut: Boolean){
-//        getPrefs(context).edit().apply {
-//            putBoolean(KEY_IS_FIRST_CHECK_OUT, isFirstCheckOut)
-//            apply()
-//        }
-//    }
-
-    fun loadCheckInState(context: Context): CheckInData {
-        val prefs = getCheckPrefs(context)
+    fun loadCheckInState(context: Context, userId: String): CheckInData {
+        val prefs = getCheckPrefs(context, userId)
         return CheckInData(
             isCheckedIn = prefs.getBoolean(KEY_CHECKED_IN, false),
             checkInMillis = prefs.getLong(KEY_CHECK_IN_TIME, 0L),
@@ -52,8 +46,8 @@ object CheckInPrefs {
         )
     }
 
-    fun resetCheckInData(context: Context) {
-        getCheckPrefs(context).edit() { clear() }
+    fun resetCheckInData(context: Context, userId: String) {
+        getCheckPrefs(context, userId).edit() { clear() }
     }
 
     data class CheckInData(

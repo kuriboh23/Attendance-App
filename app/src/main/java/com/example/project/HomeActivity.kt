@@ -15,7 +15,6 @@ import com.google.firebase.auth.FirebaseAuth
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var navButton: BottomNavigationView
-    private lateinit var userViewModel: UserViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,13 +32,6 @@ class HomeActivity : AppCompatActivity() {
                 R.id.nav_signOut -> {
                     signOut()
                 }
-//                R.id.nav_signOut -> {
-//                    auth.signOut()
-//                    Toast.makeText(this, "Signed out successfully", Toast.LENGTH_SHORT).show()
-//                    val intent = Intent(this, MainActivity::class.java)
-//                    startActivity(intent)
-//                    finish()
-//                }
             }
             true
         }
@@ -55,7 +47,6 @@ class HomeActivity : AppCompatActivity() {
     private fun loadFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
             .replace(R.id.frameLayout, fragment)
-
 
         transaction.commit()
         updateBottomNavSelection(fragment)

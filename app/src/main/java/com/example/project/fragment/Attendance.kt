@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project.R
+import com.example.project.UserPrefs
 import com.example.project.data.CheckViewModel
 import com.example.project.fragment.list.CheckAdapter
 
@@ -31,13 +32,16 @@ class Attendance : Fragment() {
         recyclerView = view.findViewById(R.id.RecView)
         img = view.findViewById(R.id.filterMouth)
 
+        val userId = UserPrefs.loadUserId(requireContext())
+
         //RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         checkAdapter = CheckAdapter()
         recyclerView.adapter = checkAdapter
 
         attendanceViewModel = ViewModelProvider(this)[CheckViewModel::class.java]
-        attendanceViewModel.allAttendances.observe(viewLifecycleOwner) { check ->
+
+        attendanceViewModel.getAllUserChecks(userId).observe(viewLifecycleOwner) { check ->
             checkAdapter.setData(check)
         }
 

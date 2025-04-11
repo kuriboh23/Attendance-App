@@ -13,7 +13,6 @@ class CheckViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: CheckRepository
     val allAttendances: LiveData<List<Check>>
-    lateinit var allUserAttendances: LiveData<List<Check>>
 
     init {
         val attendanceDao = AppDatabase.getDatabase(application).checkDao()
@@ -22,9 +21,7 @@ class CheckViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     // Initialize the check list for a specific user
-    fun getAllChecks(userId: Long) {
-        allUserAttendances = repository.getAllUserChecks(userId)
-    }
+    fun getAllUserChecks(userId: Long) = repository.getAllUserChecks(userId)
 
     fun addCheck(check: Check){
         viewModelScope.launch(Dispatchers.IO) {
