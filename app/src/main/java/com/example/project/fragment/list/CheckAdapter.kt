@@ -1,14 +1,18 @@
 package com.example.project.fragment.list
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project.R
 import com.example.project.data.Check
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
@@ -30,11 +34,13 @@ class CheckAdapter : RecyclerView.Adapter<CheckAdapter.CheckViewHolder>() {
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: CheckViewHolder, position: Int) {
         val currentItem = checkList[position]
+        val dayNum = currentItem.date.split("-")[2]
 
-         holder.txDayNum.text = formatDateNum(currentItem.date)
-         holder.txDayText.text = formatDateName(currentItem.date)
+         holder.txDayNum.text = dayNum
+         holder.txDayText.text = getDayAbbreviation(currentItem.date)
          holder.tvCheckInTime.text = currentItem.checkInTime
          holder.tvCheckOutTime.text = currentItem.checkOutTime
         val durationInSeconds = currentItem.durationInSecond
@@ -46,15 +52,12 @@ class CheckAdapter : RecyclerView.Adapter<CheckAdapter.CheckViewHolder>() {
 
     override fun getItemCount(): Int = checkList.size
 
-    fun formatDateName(timestamp: Long): String {
-        val date = Date(timestamp)
-        val sdf = SimpleDateFormat("EEE", Locale.getDefault()) // "07 Mon"
-        return sdf.format(date)
-    }
-    fun formatDateNum(timestamp: Long): String {
-        val date = Date(timestamp)
-        val sdf = SimpleDateFormat("dd", Locale.getDefault()) // "07 Mon"
-        return sdf.format(date)
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getDayAbbreviation(dateString: String): String {
+        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
+        val date = LocalDate.parse(dateString, inputFormatter)
+        val dayFormatter = DateTimeFormatter.ofPattern("EEE", Locale.ENGLISH) // "EEE" gives "Fri"
+        return date.format(dayFormatter)
     }
 
     fun setData(newList: List<Check>) {

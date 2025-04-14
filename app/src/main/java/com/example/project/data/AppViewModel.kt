@@ -33,6 +33,10 @@ class CheckViewModel(application: Application) : AndroidViewModel(application) {
         return repository.getChecksUserByDate(date, userId)
     }
 
+    fun getChecksByWeek(userId: Long, startOfWeek: String, endOfWeek: String): LiveData<List<Check>> {
+        return repository.getChecksByWeek(userId, startOfWeek, endOfWeek)
+    }
+
     fun deleteAllChecks() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAllChecks()
@@ -90,7 +94,7 @@ class TimeManagerViewModel(application: Application) : AndroidViewModel(applicat
             repository.deleteAllTimeManagers()
         }
     }
-    fun getChecksByDate(date: String, userId: Long): LiveData<List<TimeManager>> {
-        return repository.getChecksByDate(date, userId)
+    fun getChecksByMonth(monthYear: String, userId: Long): LiveData<List<TimeManager>> {
+        return repository.getChecksByMonth(monthYear, userId)
     }
 }

@@ -2,6 +2,7 @@ package com.example.project.fragment
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -11,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -44,7 +44,7 @@ class Home : Fragment() {
     private val monthFormat = SimpleDateFormat("MMM", Locale.getDefault())
     private val yearFormat = SimpleDateFormat("yyyy", Locale.getDefault())
     private val dayNameFormat = SimpleDateFormat("EEEE", Locale.getDefault())
-    val dateFormatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     private val now = System.currentTimeMillis()
     private val dayName = dayNameFormat.format(Date())
@@ -61,6 +61,7 @@ class Home : Fragment() {
     private lateinit var attendanceViewModel: CheckViewModel
     private lateinit var userViewModel: UserViewModel
     private lateinit var timeManagerViewModel: TimeManagerViewModel
+
 
     private lateinit var userId: String
 
@@ -97,22 +98,11 @@ class Home : Fragment() {
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
         timeManagerViewModel = ViewModelProvider(this)[TimeManagerViewModel::class.java]
 
-
-//        val tvGreeting = binding.tvGreeting
-//        val scanButton = binding.checkInBtn
-//        val currentDate = binding.tvDate
-//        val checkBtnName = binding.checkBtnName
-//        val cardCheckInButton = binding.cardCheckInButton
-//        val profileImg = binding.ivProfile
-//        val checkInTimeText = binding.tvCheckInTime
-//        val checkOutTimeText = binding.tvCheckOutTime
-//        val durationText = binding.tvTotalHours
-//        val currentTimeText = binding.tvTime
+        userId = UserPrefs.loadUserId(requireContext()).toString()
 
         binding.tvDate.text = "$month $day, $year - $dayName"
 
-//        startTimeCheck()
-        timeManager()
+        startTimeCheck(requireContext())
 
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
             != PackageManager.PERMISSION_GRANTED
@@ -122,7 +112,6 @@ class Home : Fragment() {
             startQrScan()
         }
 
-        userId = UserPrefs.loadUserId(requireContext()).toString()
         val savedState = CheckInPrefs.loadCheckInState(requireContext(), userId)
 
         if (savedState.checkInStr != null) {
@@ -183,7 +172,9 @@ class Home : Fragment() {
     override fun onStop() {
         super.onStop()
         handler.removeCallbacks(timeRunnable)
-        handler.removeCallbacks(timeHourRunnable)
+        if (::timeHourRunnable.isInitialized) {
+            handler.removeCallbacks(timeHourRunnable)
+        }
     }
 
     private fun startQrScan() {
@@ -298,74 +289,94 @@ class Home : Fragment() {
         binding.tvTime.text = "$currentTimeStr"
     }
 
-    private fun updateUI() {
-        val savedState = CheckInPrefs.loadCheckInState(requireContext(), userId)
+    /*    private fun updateUI() {
+            val savedState = CheckInPrefs.loadCheckInState(requireContext(), userId)
 
-        binding.tvCheckInTime.text = savedState.checkInStr ?: "00:00"
-        binding.tvCheckOutTime.text = savedState.checkOutStr ?: "00:00"
-        binding.tvTotalHours.text = savedState.duration ?: "0h 0m"
-        binding.checkBtnName.text = if (savedState.isCheckedIn) "Check Out" else "Check In"
-        isCheckedIn = savedState.isCheckedIn
+            binding.tvCheckInTime.text = savedState.checkInStr ?: "00:00"
+            binding.tvCheckOutTime.text = savedState.checkOutStr ?: "00:00"
+            binding.tvTotalHours.text = savedState.duration ?: "0h 0m"
+            binding.checkBtnName.text = if (savedState.isCheckedIn) "Check Out" else "Check In"
+            isCheckedIn = savedState.isCheckedIn
 
-        CheckInPrefs.resetCheckInData(requireContext(), userId)
-        Toast.makeText(requireContext(), "Check-in data reset", Toast.LENGTH_SHORT).show()
-    }
+            CheckInPrefs.resetCheckInData(requireContext(), userId)
+            Toast.makeText(requireContext(), "Check-in data reset", Toast.LENGTH_SHORT).show()
+        }*/
 
+    private fun startTimeCheck(context: Context) {
+        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val lastRunDate = prefs.getString("summary_last_run_date", null)
+        val today = dateFormatter.format(Date(now))
 
-    private fun startTimeCheck() {
+        // If already run today, skip it
+        if (lastRunDate == today) {
+            println("Summary already run today. Skipping.")
+            return
+        }
+
+        val now = System.currentTimeMillis()
+        val currentHour = SimpleDateFormat("HH", Locale.getDefault()).format(Date(now)).toInt()
+
+        // Already past 12 PM? Run immediately and mark it as done
+        if (currentHour >= 24) {
+            timeManager()
+            // Save today's date to avoid running again
+            prefs.edit().putString("summary_last_run_date", today).apply()
+            return
+        }
+
+        // Otherwise start checking every minute
         timeHourRunnable = object : Runnable {
             override fun run() {
                 val now = System.currentTimeMillis()
-                val currentHour = SimpleDateFormat("HH", Locale.getDefault()).format(Date(now)).toInt()
+                val currentHour =
+                    SimpleDateFormat("HH", Locale.getDefault()).format(Date(now)).toInt()
+                val currentMinute = minutesFormat.format(Date(now)).toInt()
 
-                if (currentHour >= 18) {
-                    // If the time is after or exactly 18:00, call the timeManager
+                if (currentHour >= 24) {
                     timeManager()
-                    // Optionally remove this handler after calling timeManager so it doesn't check again
+
+                    // Save today's date to mark as done
+                    prefs.edit().putString("summary_last_run_date", today).apply()
                     handler.removeCallbacks(this)
                 } else {
-                    // Check every minute (60000ms)
-                    handler.postDelayed(this, 60000)  // Check again in 60 seconds
+                    handler.postDelayed(this, 60000)
                 }
             }
         }
-
-        // Start the initial check
         handler.post(timeHourRunnable)
     }
-
 
     private fun timeManager() {
         val now = System.currentTimeMillis()
         val currentDateStr = dateFormatter.format(Date(now))
-        val currentHour = hoursFormat.format(Date(now))
-        val currentMinute = minutesFormat.format(Date(now))
 
-        if (currentHour >= "20" && currentMinute >= "45"){
+        userId = UserPrefs.loadUserId(requireContext()).toString()
 
-        val userCheckByDate = attendanceViewModel.getChecksUserByDate(currentDateStr, userId.toLong())
+        val userCheckByDate =
+            attendanceViewModel.getChecksUserByDate(currentDateStr, userId.toLong())
 
         userCheckByDate.observe(viewLifecycleOwner) { checks ->
             if (checks.isNotEmpty()) {
                 var workTime = 0
                 var extraTime = 0
-                var absent = 0
+                var absent = false
                 for (check in checks) {
                     workTime += check.durationInSecond.toInt()
                 }
 
-               workTime /= 3600
-                if (workTime > 8){
+                workTime /= 3600
+                if (workTime > 8) {
                     extraTime = workTime - 8
-                }else if(workTime < 8){
-                    absent = 1
+                    workTime = 8
+                } else if (workTime < 8) {
+                    absent = true
                 }
 
-                val timeManager = TimeManager(0, currentDateStr, workTime, extraTime, absent, userId.toLong())
+                val timeManager =
+                    TimeManager(0, currentDateStr, workTime, extraTime, absent, userId.toLong())
                 timeManagerViewModel.insertTimeManager(timeManager)
                 Toast.makeText(requireContext(), "Successfully added!", Toast.LENGTH_LONG).show()
             }
         }
-    }
     }
 }

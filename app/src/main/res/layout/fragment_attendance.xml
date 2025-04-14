@@ -8,6 +8,7 @@
     android:background="@color/white"
     tools:context=".fragment.Attendance">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,7 +60,7 @@
                 android:fontFamily="@font/poppins"
 
                 android:text="Summary"
-                android:textColor="@color/gray"
+                android:textColor="@color/gray_black"
 
                 app:layout_constraintStart_toStartOf="@+id/gridAttendanceSummary"
                 app:layout_constraintTop_toBottomOf="@+id/tvMonthYear" />
@@ -144,9 +145,10 @@
                         android:padding="12dp">
 
                         <TextView
+                            android:id="@+id/absentTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="05"
+                            android:text="00"
                             android:textColor="@android:color/black"
                             android:textSize="22sp"
                             android:textStyle="bold" />
@@ -208,9 +210,10 @@
                         android:padding="12dp">
 
                         <TextView
+                            android:id="@+id/extraTimeTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="08"
+                            android:text="00"
                             android:textColor="@android:color/black"
                             android:textSize="22sp"
                             android:textStyle="bold" />
@@ -218,7 +221,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Leaves"
+                            android:text="Extra Time"
                             android:textColor="#CCAA66"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -260,8 +263,8 @@
             android:layout_height="wrap_content"
 
             android:fontFamily="@font/poppins"
-            android:text="Weeks"
-            android:textColor="@color/gray"
+            android:text="Checks"
+            android:textColor="@color/gray_black"
             android:textStyle="bold"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout

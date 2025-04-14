@@ -9,6 +9,7 @@ import com.example.project.fragment.Attendance
 import com.example.project.fragment.Home
 import com.example.project.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.color.DynamicColors
 
 class HomeActivity : AppCompatActivity() {
 
@@ -18,10 +19,13 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
+        DynamicColors.applyToActivitiesIfAvailable(application)
+
         navButton = findViewById(R.id.bottomNavigationView)
         navButton.itemIconTintList = null
 
         loadFragment(Home())
+        navButton.setItemActiveIndicatorEnabled(false)
 
         navButton.setOnItemSelectedListener {
             when (it.itemId) {

@@ -22,6 +22,10 @@ interface CheckDao {
 
     @Query("DELETE FROM check_table")
     fun deleteAllChecks()
+
+    @Query("SELECT * FROM check_table WHERE userId = :user_id AND date BETWEEN :startOfWeek AND :endOfWeek")
+    fun getChecksByWeek(user_id: Long, startOfWeek: String, endOfWeek: String): LiveData<List<Check>>
+
 }
 
 @Dao
@@ -56,7 +60,7 @@ interface TimeManagerDao {
     @Query("SELECT * FROM time_manager WHERE userId = :user_id ORDER BY id ASC")
     fun getAllUserTimeManagers(user_id: Long): LiveData<List<TimeManager>>
 
-    // Fixing query for fetching checks by date and userId
-    @Query("SELECT * FROM time_manager WHERE date = :date AND userId = :user_id ORDER BY id ASC")
-    fun getChecksByDate(date: String, user_id: Long): LiveData<List<TimeManager>>
+    @Query("SELECT * FROM time_manager WHERE date LIKE :monthYear || '%' AND userId = :user_id ORDER BY id ASC")
+    fun getChecksByMonth(monthYear: String, user_id: Long): LiveData<List<TimeManager>>
+
 }

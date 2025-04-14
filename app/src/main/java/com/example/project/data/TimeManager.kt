@@ -22,6 +22,6 @@ data class TimeManager(
     val date: String,
     val workTime: Int,
     val extraTime: Int,
-    val absent: Int,
+    val absent: Boolean,
     @ColumnInfo(name = "userId") val userId: Long
 )

@@ -38,7 +38,7 @@ class SignUp:AppCompatActivity() {
             val role = "user"
             if (firstName.isNotEmpty() && lastName.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()){
                 if (password == confirmPassword){
-                    val user = User(0, firstName, lastName, email, password, role,8)
+                    val user = User(0, firstName, lastName, email, password, role)
                     insertUser(user)
                     val intent = Intent(this, Login::class.java)
                     startActivity(intent)

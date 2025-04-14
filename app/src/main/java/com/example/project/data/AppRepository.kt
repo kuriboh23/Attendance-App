@@ -18,6 +18,10 @@ class CheckRepository(private val attendanceDao: CheckDao) {
         return attendanceDao.getChecksUserByDate(date, userId)
     }
 
+    fun getChecksByWeek(userId: Long, startOfWeek: String, endOfWeek: String): LiveData<List<Check>> {
+        return attendanceDao.getChecksByWeek(userId, startOfWeek, endOfWeek)
+    }
+
     fun deleteAllChecks(){
         attendanceDao.deleteAllChecks()
     }
@@ -52,9 +56,9 @@ class TimeManagerRepository(private val timeManagerDao: TimeManagerDao) {
     fun deleteAllTimeManagers() {
         timeManagerDao.deleteAllTimeManagers()
     }
-
-    fun getChecksByDate(date: String, userId: Long): LiveData<List<TimeManager>> {
-        return timeManagerDao.getChecksByDate(date, userId)
+    fun getChecksByMonth(monthYear: String, userId: Long): LiveData<List<TimeManager>> {
+        return timeManagerDao.getChecksByMonth(monthYear, userId)
     }
+
 
 }
