@@ -94,7 +94,7 @@ class TimeManagerViewModel(application: Application) : AndroidViewModel(applicat
             repository.deleteAllTimeManagers()
         }
     }
-    fun getChecksByMonth(monthYear: String, userId: Long): LiveData<List<TimeManager>> {
-        return repository.getChecksByMonth(monthYear, userId)
+    fun getTimeManagersByMonth(monthYear: String, userId: Long): LiveData<List<TimeManager>> {
+        return repository.getTimeManagersByMonth(monthYear, userId)
     }
 }

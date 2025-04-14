@@ -61,6 +61,6 @@ interface TimeManagerDao {
     fun getAllUserTimeManagers(user_id: Long): LiveData<List<TimeManager>>
 
     @Query("SELECT * FROM time_manager WHERE date LIKE :monthYear || '%' AND userId = :user_id ORDER BY id ASC")
-    fun getChecksByMonth(monthYear: String, user_id: Long): LiveData<List<TimeManager>>
+    fun getTimeManagersByMonth(monthYear: String, user_id: Long): LiveData<List<TimeManager>>
 
 }

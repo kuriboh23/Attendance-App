@@ -56,8 +56,8 @@ class TimeManagerRepository(private val timeManagerDao: TimeManagerDao) {
     fun deleteAllTimeManagers() {
         timeManagerDao.deleteAllTimeManagers()
     }
-    fun getChecksByMonth(monthYear: String, userId: Long): LiveData<List<TimeManager>> {
-        return timeManagerDao.getChecksByMonth(monthYear, userId)
+    fun getTimeManagersByMonth(monthYear: String, userId: Long): LiveData<List<TimeManager>> {
+        return timeManagerDao.getTimeManagersByMonth(monthYear, userId)
     }
 
 

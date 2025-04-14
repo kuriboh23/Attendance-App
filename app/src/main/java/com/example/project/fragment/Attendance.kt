@@ -6,13 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.project.R
 import com.example.project.UserPrefs
 import com.example.project.data.CheckViewModel
 import com.example.project.data.TimeManagerViewModel
@@ -133,7 +129,7 @@ class Attendance : Fragment() {
                     }
                 }
 
-            timeManagerViewModel.getChecksByMonth(mouthYear, userId)
+            timeManagerViewModel.getTimeManagersByMonth(mouthYear, userId)
                 .observe(viewLifecycleOwner) { timeManager ->
                     val totalExtraTime = timeManager.sumOf { it.extraTime }
                     binding.extraTimeTxt.text = totalExtraTime.toString()
