@@ -35,6 +35,21 @@ class Salary : Fragment() {
         timeManagerViewModel = ViewModelProvider(this)[TimeManagerViewModel::class.java]
         val userId = UserPrefs.loadUserId(requireContext())
 
+        val monthYearFormat = SimpleDateFormat("yyyy-MM", Locale.getDefault())
+        val monthNameYearFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+
+        val monthYear = monthYearFormat.format(now)
+        val monthNameYear = monthNameYearFormat.format(now)
+
+        timeManagerViewModel.getTimeManagersByMonth(monthYear, userId)
+            .observe(viewLifecycleOwner) { timeManagers ->
+                binding.tvMonthYear.text = monthNameYear
+                val extraTime = timeManagers.sumOf { it.extraTime }
+                val workTime = timeManagers.sumOf { it.workTime }
+                val salaryNet = (workTime + extraTime) * 200
+                binding.tvSalaryNet.text = "MAD $salaryNet"
+            }
+
         binding.filterMouth.setOnClickListener {
             filterByMonth(userId)
         }
