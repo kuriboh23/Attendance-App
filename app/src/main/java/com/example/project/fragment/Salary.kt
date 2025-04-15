@@ -59,10 +59,6 @@ class Salary : Fragment() {
                 binding.tvSalaryNet.text = "MAD $salaryNet"
             }
 
-/*        binding.filterMouth.setOnClickListener {
-            filterByMonth(userId)
-        }*/
-
         binding.filterMouth.setOnClickListener {
             val dialog = BottomSheetDialog(requireContext())
             val view = layoutInflater.inflate(R.layout.bottom_sheet_date, null)
@@ -75,7 +71,6 @@ class Salary : Fragment() {
 
             // Prepare data
             val items = mutableListOf<YearHeader>()
-
             val currentYear = Calendar.getInstance().get(Calendar.YEAR)
 
             // Add years and months (e.g., 2023 to 2024)
@@ -113,36 +108,6 @@ class Salary : Fragment() {
         }
 
         return binding.root
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun filterByMonth(userId: Long) {
-        val datePicker = MaterialDatePicker.Builder.datePicker()
-            .setTitleText("Pick a date (we'll use its month)")
-            .build()
-
-        datePicker.show(childFragmentManager, "MONTH_PICKER")
-
-        datePicker.addOnPositiveButtonClickListener { selection ->
-            val calendar = Calendar.getInstance().apply {
-                timeInMillis = selection
-            }
-
-            val monthYearFormat = SimpleDateFormat("yyyy-MM", Locale.getDefault())
-            val monthNameYearFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
-
-            val monthYear = monthYearFormat.format(calendar.time)
-            val monthNameYear = monthNameYearFormat.format(calendar.time)
-
-            timeManagerViewModel.getTimeManagersByMonth(monthYear, userId)
-                .observe(viewLifecycleOwner) { timeManagers ->
-                    binding.tvMonthYear.text = monthNameYear
-                    val extraTime = timeManagers.sumOf { it.extraTime }
-                    val workTime = timeManagers.sumOf { it.workTime }
-                    val salaryNet = (workTime + extraTime) * 200
-                    binding.tvSalaryNet.text = "MAD $salaryNet"
-                }
-        }
     }
 
 }
