@@ -18,7 +18,8 @@ import com.example.project.UserPrefs
 import com.example.project.adapter.MonthAdapter
 import com.example.project.data.TimeManagerViewModel
 import com.example.project.databinding.FragmentSalaryBinding
-import com.example.project.fragment.list.DateItem
+import com.example.project.fragment.list.MonthItem
+import com.example.project.fragment.list.YearHeader
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
@@ -73,36 +74,27 @@ class Salary : Fragment() {
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
             // Prepare data
-            val items = mutableListOf<DateItem>()
-            val months = listOf(
-                "January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December"
-            )
+            val items = mutableListOf<YearHeader>()
 
             val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-            val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
 
             // Add years and months (e.g., 2023 to 2024)
             for (year in currentYear - 2..currentYear) {
-                // Expand the current year by default
-                val isCurrent = year == currentYear
-                items.add(DateItem.YearHeader(year, isExpanded = isCurrent))
-
-                months.forEachIndexed { index, month ->
-                    val monthNumber = index + 1
-                    val isSelected = isCurrent && monthNumber == currentMonth
-                    items.add(DateItem.MonthItem(monthNumber, month, year, isSelected))
+                val monthsList = listOf(
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ).mapIndexed { index, name ->
+                    MonthItem(
+                        year = year,
+                        monthNumber = index + 1,
+                        monthName = name
+                    )
                 }
+                items.add(YearHeader(year = year, months = monthsList))
             }
-
             // Set up adapter
             val adapter = MonthAdapter(items) { selectedMonth ->
                 val monthYearStr = "${selectedMonth.year}-${selectedMonth.monthNumber.toString().padStart(2, '0')}"
-                items.forEach { when(it) {
-                    is DateItem.MonthItem -> it.isSelected = false
-                    is DateItem.YearHeader -> it.isExpanded = false
-                }}
-                selectedMonth.isSelected = true
 
                 timeManagerViewModel.getTimeManagersByMonth(monthYearStr, userId)
                     .observe(viewLifecycleOwner) { timeManagers ->
@@ -114,59 +106,14 @@ class Salary : Fragment() {
                     }
                 dialog.dismiss()
             }
+            adapter.notifyDataSetChanged()
             recyclerView.adapter = adapter
 
             dialog.show()
         }
 
         return binding.root
-    }/*
-    private fun setupYearMonthSpinner(spinner: Spinner) {
-        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-        val years = (currentYear - 50..currentYear + 10).toList() // Adjust range as needed
-        val yearMonthList = mutableListOf<String>()
-
-        val months = listOf(
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        )
-
-        // Create entries like "2023 - January"
-        years.forEach { year ->
-            months.forEach { month ->
-                yearMonthList.add("$year - $month")
-            }
-        }
-
-        val adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_item,
-            yearMonthList
-        ).apply {
-            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        }
-
-        spinner.adapter = adapter
     }
-
-    // Helper function to convert month name to number (e.g., "January" -> "01")
-    private fun monthToNumber(month: String): String {
-        return when (month) {
-            "January" -> "01"
-            "February" -> "02"
-            "March" -> "03"
-            "April" -> "04"
-            "May" -> "05"
-            "June" -> "06"
-            "July" -> "07"
-            "August" -> "08"
-            "September" -> "09"
-            "October" -> "10"
-            "November" -> "11"
-            "December" -> "12"
-            else -> "01"
-        }
-    }*/
 
     @SuppressLint("SetTextI18n")
     private fun filterByMonth(userId: Long) {

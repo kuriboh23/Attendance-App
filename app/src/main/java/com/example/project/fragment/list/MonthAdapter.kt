@@ -7,49 +7,37 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project.R
-import com.example.project.fragment.list.DateItem
+import com.example.project.fragment.list.MonthItem
+import com.example.project.fragment.list.YearHeader
 
 class MonthAdapter(
-    private val allItems: List<DateItem>,
-    private val onMonthSelected: (DateItem.MonthItem) -> Unit
+    private val allItems: List<YearHeader>,
+    private val selectMonth: (MonthItem) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private val displayedItems: MutableList<Any> = mutableListOf()
+
     companion object {
-        private const val TYPE_YEAR_HEADER = 0
-        private const val TYPE_MONTH_ITEM = 1
+        private const val TYPE_YEAR = 0
+        private const val TYPE_MONTH = 1
     }
 
-    // Filtered list based on expanded/collapsed state
-    private val displayedItems: MutableList<DateItem> = mutableListOf()
-
     init {
-
         val currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
-        allItems.filterIsInstance<DateItem.YearHeader>().forEach {
+        allItems.forEach {
             if (it.year == currentYear) {
                 it.isExpanded = true
             }
         }
-        // Initialize displayed items with all items
         updateDisplayedItems()
     }
 
-    // Update the displayed items based on the expanded state of years
     private fun updateDisplayedItems() {
         displayedItems.clear()
-        var currentYearHeader: DateItem.YearHeader? = null
-
-        allItems.forEach { item ->
-            when (item) {
-                is DateItem.YearHeader -> {
-                    currentYearHeader = item
-                    displayedItems.add(item)
-                }
-                is DateItem.MonthItem -> {
-                    if (currentYearHeader?.isExpanded == true) {
-                        displayedItems.add(item)
-                    }
-                }
+        for (year in allItems) {
+            displayedItems.add(year)
+            if (year.isExpanded) {
+                displayedItems.addAll(year.months)
             }
         }
         notifyDataSetChanged()
@@ -57,57 +45,49 @@ class MonthAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (displayedItems[position]) {
-            is DateItem.YearHeader -> TYPE_YEAR_HEADER
-            is DateItem.MonthItem -> TYPE_MONTH_ITEM
+            is YearHeader -> TYPE_YEAR
+            is MonthItem -> TYPE_MONTH
+            else -> throw IllegalArgumentException("Unknown type")
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            TYPE_YEAR_HEADER -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_year_header, parent, false)
+            TYPE_YEAR -> {
+                val view = inflater.inflate(R.layout.item_year_header, parent, false)
                 YearHeaderViewHolder(view)
             }
-            else -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_month, parent, false)
+            TYPE_MONTH -> {
+                val view = inflater.inflate(R.layout.item_month, parent, false)
                 MonthViewHolder(view)
             }
+            else -> throw IllegalArgumentException("Invalid view type")
         }
     }
 
+    override fun getItemCount(): Int = displayedItems.size
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = displayedItems[position]) {
-            is DateItem.YearHeader -> {
+            is YearHeader -> {
                 (holder as YearHeaderViewHolder).bind(item)
                 holder.itemView.setOnClickListener {
                     item.isExpanded = !item.isExpanded
                     updateDisplayedItems()
                 }
             }
-            is DateItem.MonthItem -> {
-                val monthHolder = holder as MonthViewHolder
-                monthHolder.bind(item)
-
+            is MonthItem -> {
+                (holder as MonthViewHolder).bind(item)
                 holder.itemView.setOnClickListener {
-                    // Deselect all months
-                    allItems.filterIsInstance<DateItem.MonthItem>().forEach { it.isSelected = false }
-                    // Select the clicked one
-                    item.isSelected = true
-
-                    // Refresh the full adapter (or optimize with notifyItemChanged)
-                    updateDisplayedItems()
-
-                    // Callback to parent
-                    onMonthSelected(item)
+                    selectMonth(item)
                 }
             }
         }
     }
 
-    override fun getItemCount(): Int = displayedItems.size
-
     class YearHeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(yearHeader: DateItem.YearHeader) {
+        fun bind(yearHeader: YearHeader) {
             itemView.findViewById<TextView>(R.id.year_text).text = yearHeader.year.toString()
             val expandIcon = itemView.findViewById<ImageView>(R.id.expand_icon)
             expandIcon.rotation = if (yearHeader.isExpanded) 0f else -180f
@@ -115,18 +95,9 @@ class MonthAdapter(
     }
 
     class MonthViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(monthItem: DateItem.MonthItem) {
-            val numberView = itemView.findViewById<TextView>(R.id.month_number)
-            val nameView = itemView.findViewById<TextView>(R.id.month_name)
-
-            numberView.text = monthItem.monthNumber.toString()
-            nameView.text = monthItem.monthName.uppercase()
-
-            if (monthItem.isSelected) {
-                itemView.setBackgroundResource(R.color.mainColor)
-            } else {
-                itemView.setBackgroundResource(R.color.black)
-            }
+        fun bind(monthItem: MonthItem) {
+            itemView.findViewById<TextView>(R.id.month_name).text = monthItem.monthName
+            itemView.findViewById<TextView>(R.id.month_number).text = monthItem.monthNumber.toString()
         }
     }
 }
