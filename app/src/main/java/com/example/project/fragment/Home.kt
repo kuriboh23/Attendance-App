@@ -289,19 +289,6 @@ class Home : Fragment() {
         binding.tvTime.text = "$currentTimeStr"
     }
 
-    /*    private fun updateUI() {
-            val savedState = CheckInPrefs.loadCheckInState(requireContext(), userId)
-
-            binding.tvCheckInTime.text = savedState.checkInStr ?: "00:00"
-            binding.tvCheckOutTime.text = savedState.checkOutStr ?: "00:00"
-            binding.tvTotalHours.text = savedState.duration ?: "0h 0m"
-            binding.checkBtnName.text = if (savedState.isCheckedIn) "Check Out" else "Check In"
-            isCheckedIn = savedState.isCheckedIn
-
-            CheckInPrefs.resetCheckInData(requireContext(), userId)
-            Toast.makeText(requireContext(), "Check-in data reset", Toast.LENGTH_SHORT).show()
-        }*/
-
     private fun startTimeCheck(context: Context) {
         val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
         val lastRunDate = prefs.getString("summary_last_run_date", null)

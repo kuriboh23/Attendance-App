@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.example.project.fragment.Attendance
 import com.example.project.fragment.Home
 import com.example.project.R
+import com.example.project.fragment.Leave
 import com.example.project.fragment.Salary
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.color.DynamicColors
@@ -36,6 +37,7 @@ class HomeActivity : AppCompatActivity() {
                     signOut()
                 }
                 R.id.nav_salary -> loadFragment(Salary())
+                R.id.nav_leave -> loadFragment(Leave())
             }
             true
         }

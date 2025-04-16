@@ -44,11 +44,6 @@ class Attendance : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentAttendanceBinding.inflate( inflater, container, false)
 
-/*        recyclerView = view.findViewById(R.id.RecView)
-        img = view.findViewById(R.id.filterMouth)
-        extraTimeTxt = view.findViewById(R.id.extraTimeTxt)
-        absentTxt = view.findViewById(R.id.absentTxt)*/
-
         val userId = UserPrefs.loadUserId(requireContext())
 
         //RecyclerView
@@ -73,7 +68,7 @@ class Attendance : Fragment() {
                     checkAdapter.setData(checks)
                     binding.tvMonthYear.text = monthNameYear
                     binding.summaryText.text = "Summary of $monthName"
-                    binding.weeksText.text = "$weekOfMonth Week"
+                    binding.weeksText.text = "Week $weekOfMonth"
             }
 
         binding.filterMouth.setOnClickListener {
@@ -123,7 +118,7 @@ class Attendance : Fragment() {
                     checkAdapter.setData(checks)
                         binding.tvMonthYear.text = monthNameYear
                         binding.summaryText.text = "Summary of $monthName"
-                        binding.weeksText.text = "$weekOfMonth Week"
+                        binding.weeksText.text = "Week $weekOfMonth"
                     }else{
                         Toast.makeText(requireContext(), "No Checks found", Toast.LENGTH_SHORT).show()
                     }

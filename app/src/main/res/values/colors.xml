@@ -11,4 +11,8 @@
     <color name="checkOut">#F08080</color>
     <color name="checkOutLight">#DEF48787</color>
 
+    <color name="teal">#26C6DA</color>
+    <color name="green">#4CAF50</color>
+    <color name="gray_light">#E0E0E0</color>
+    <color name="orange">#FF9800</color>
 </resources>

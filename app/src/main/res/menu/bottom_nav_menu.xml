@@ -8,13 +8,13 @@
         android:icon="@drawable/ic_attend_selector"
         android:title="Profile"/>
     <item
-        android:id="@+id/nav_calender"
+        android:id="@+id/nav_leave"
         android:icon="@drawable/ic_calender_selector"
-        android:title="Settings"/>
+        android:title="Leaves"/>
     <item
         android:id="@+id/nav_salary"
         android:icon="@drawable/ic_attend_selector"
-        android:title="Profile"/>
+        android:title="Salary"/>
     <item
         android:id="@+id/nav_signOut"
         android:icon="@drawable/ic_home_selector"

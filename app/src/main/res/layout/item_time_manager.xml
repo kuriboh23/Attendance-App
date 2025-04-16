@@ -26,41 +26,41 @@
             android:layout_gravity="center"
             app:cardElevation="0dp">
 
-        <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_gravity="center"
-            android:padding="12dp"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints">
-
-
-            <TextView
-                android:id="@+id/txDayNum"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
-
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
                 android:layout_gravity="center"
-                android:textColor="@color/white"
-                android:fontFamily="@font/poppins_semibold"
-                android:text="07" />
+                android:padding="12dp"
 
-            <TextView
-                android:id="@+id/txDayText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints">
 
-                android:textColor="@color/white"
-                android:fontFamily="@font/poppins_semibold"
-                android:text="Mon" />
-        </LinearLayout>
-            </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/txDayNum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+
+                    android:layout_gravity="center"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="07" />
+
+                <TextView
+                    android:id="@+id/txDayText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="Mon" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <!-- Check In Section -->
         <LinearLayout
@@ -75,11 +75,11 @@
                 android:id="@+id/imgCheckIn"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/clock_in"/>
-<!--                app:tint="#8EB8AC" />-->
+                android:src="@drawable/work_time"/>
+            <!--                app:tint="#8EB8AC" />-->
 
             <TextView
-                android:id="@+id/tvCheckInTime"
+                android:id="@+id/tv_work_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
@@ -93,7 +93,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Check In"
+                android:text="Work Time"
                 android:textColor="@color/grayLight"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -117,11 +117,11 @@
                 android:id="@+id/imgCheckOut"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/clock_out"/>
-<!--                app:tint="#F08080" />-->
+                android:src="@drawable/extra_time"/>
+            <!--                app:tint="#F08080" />-->
 
             <TextView
-                android:id="@+id/tvCheckOutTime"
+                android:id="@+id/tv_extra_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
@@ -134,7 +134,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Check Out"
+                android:text="Extra Time"
                 android:textColor="@color/grayLight"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -158,10 +158,10 @@
                 android:id="@+id/imgTotalHours"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/clock_done_v2" />
+                android:src="@drawable/time_money" />
 
             <TextView
-                android:id="@+id/tvTotalHours"
+                android:id="@+id/tv_salary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -173,7 +173,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Hrs"
+                android:text="Day Salary"
                 android:textColor="@color/grayLight"
                 android:textSize="12sp" />
         </LinearLayout>

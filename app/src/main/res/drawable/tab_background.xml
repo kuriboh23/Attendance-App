@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/tab_background.xml -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
         <shape>
-            <solid android:color="#E0F7FA" /> <!-- Light blue for selected -->
-            <corners android:radius="8dp" />
+            <solid android:color="@color/mainColor" />
+            <corners android:radius="20dp" />
         </shape>
     </item>
     <item>
         <shape>
             <solid android:color="@android:color/transparent" />
+            <stroke android:width="1dp" android:color="@color/gray" />
+            <corners android:radius="20dp" />
         </shape>
     </item>
 </selector>
