@@ -193,7 +193,7 @@
 
                 <!-- Floating Action Button -->
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabAddRequest"
+                    android:id="@+id/addRequest"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|bottom"
