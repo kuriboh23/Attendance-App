@@ -49,20 +49,6 @@
             app:layout_constraintTop_toBottomOf="@id/signupTitle" />
 
         <TextView
-            android:id="@+id/emailTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-
-            android:fontFamily="@font/poppins"
-            android:text="Email Address"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/signup_msg" />
-
-        <TextView
             android:id="@+id/switchToNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,53 +57,46 @@
             android:text="Mobile Number?"
             android:textColor="@color/mainColor"
             android:textStyle="bold"
+            android:layout_marginTop="12dp"
 
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/emailTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/signup_msg" />
 
-        <EditText
-            android:id="@+id/emailInput"
+        <!-- Email -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/editext_background"
-            android:fontFamily="@font/poppins"
-
-            android:hint="Enter email address"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/gray_black"
             android:textColorHint="@color/gray_black"
-            android:textSize="16sp"
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/emailTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/switchToNumber">
 
-        <TextView
-            android:id="@+id/passwordTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-
-            android:fontFamily="@font/poppins"
-            android:text="Password"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/emailInput" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/emailInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/editext_background"
+                android:fontFamily="@font/poppins"
+                android:hint="Enter email address"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/gray_black" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/passwordInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:passwordToggleEnabled="true"
             android:hint="Create password"
             android:textColorHint="@color/gray_black"
-            app:passwordToggleTint="@color/gray_black"
-
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/passwordTitle" >
+            app:layout_constraintTop_toBottomOf="@+id/emailInputLayout"
+
+            android:layout_marginTop="26dp"
+
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/gray_black">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txPassword"
@@ -128,7 +107,7 @@
 
                 android:inputType="textPassword"
                 android:textColor="@color/gray_black"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
