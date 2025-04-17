@@ -98,3 +98,29 @@ class TimeManagerViewModel(application: Application) : AndroidViewModel(applicat
         return repository.getTimeManagersByMonth(monthYear, userId)
     }
 }
+
+class LeaveViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository: LeaveRepository
+    val allLeaves: LiveData<List<Leave>>
+    init {
+        val leaveDao = AppDatabase.getDatabase(application).leaveDao()
+        repository = LeaveRepository(leaveDao)
+        allLeaves = repository.allLeaves
+    }
+    fun getAllUserLeaves(userId: Long): LiveData<List<Leave>> {
+        return repository.getAllUserLeaves(userId)
+    }
+    fun insertLeave(leave: Leave) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.insertLeave(leave)
+        }
+    }
+    fun deleteAllLeaves() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllLeaves()
+        }
+    }
+    fun getLeavesByMonth(monthYear: String, userId: Long): LiveData<List<Leave>> {
+        return repository.getLeavesByMonth(monthYear, userId)
+    }
+}

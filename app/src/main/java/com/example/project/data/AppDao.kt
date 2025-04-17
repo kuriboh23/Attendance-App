@@ -64,3 +64,31 @@ interface TimeManagerDao {
     fun getTimeManagersByMonth(monthYear: String, user_id: Long): LiveData<List<TimeManager>>
 
 }
+
+@Dao
+interface LeaveDao{
+    @Insert
+    suspend fun insertLeave(leave: Leave):Long
+
+    @Query("SELECT * FROM leave_table ORDER BY id ASC")
+    fun getAllLeaves():LiveData<List<Leave>>
+
+    @Query("SELECT * FROM leave_table WHERE :user_id == userId ORDER BY id ASC")
+    fun getAllUserLeaves(user_id:Long):LiveData<List<Leave>>
+
+    @Query("DELETE FROM leave_table")
+    fun deleteAllLeaves()
+
+/*
+    @Query("SELECT * FROM leave_table WHERE date == :date AND :user_id == userId ORDER BY id ASC")
+    fun getLeavesUserByDate(date: String, user_id:Long): LiveData<List<Leave>>
+
+    @Query("SELECT * FROM leave_table WHERE userId = :user_id AND date BETWEEN :startOfWeek AND :endOfWeek")
+    fun getLeavesByWeek(user_id: Long, startOfWeek: String, endOfWeek: String): LiveData<List<Leave>>
+*/
+
+    @Query("SELECT * FROM leave_table WHERE date LIKE :monthYear || '%' AND userId = :user_id ORDER BY id ASC")
+    fun getLeavesByMonth(monthYear: String, user_id: Long): LiveData<List<Leave>>
+
+
+}

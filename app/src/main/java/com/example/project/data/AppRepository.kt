@@ -62,3 +62,23 @@ class TimeManagerRepository(private val timeManagerDao: TimeManagerDao) {
 
 
 }
+
+class LeaveRepository(private val leaveDao: LeaveDao) {
+    val allLeaves: LiveData<List<Leave>> = leaveDao.getAllLeaves()
+
+    fun getAllUserLeaves(userId: Long): LiveData<List<Leave>> {
+        return leaveDao.getAllUserLeaves(userId)
+    }
+
+    suspend fun insertLeave(leave: Leave) {
+        leaveDao.insertLeave(leave)
+    }
+
+    fun deleteAllLeaves() {
+        leaveDao.deleteAllLeaves()
+        }
+
+    fun getLeavesByMonth(monthYear: String, userId: Long): LiveData<List<Leave>> {
+        return leaveDao.getLeavesByMonth(monthYear, userId)
+    }
+}
