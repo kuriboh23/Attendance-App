@@ -2,8 +2,10 @@ package com.example.project.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CheckDao {
@@ -76,8 +78,8 @@ interface LeaveDao{
     @Query("SELECT * FROM leave_table WHERE :user_id == userId ORDER BY id ASC")
     fun getAllUserLeaves(user_id:Long):LiveData<List<Leave>>
 
-    @Query("DELETE FROM leave_table")
-    fun deleteAllLeaves()
+    @Delete
+    suspend fun deleteLeave(leave: Leave)
 
 /*
     @Query("SELECT * FROM leave_table WHERE date == :date AND :user_id == userId ORDER BY id ASC")
@@ -90,5 +92,16 @@ interface LeaveDao{
     @Query("SELECT * FROM leave_table WHERE date LIKE :monthYear || '%' AND userId = :user_id ORDER BY id ASC")
     fun getLeavesByMonth(monthYear: String, user_id: Long): LiveData<List<Leave>>
 
+    @Query("SELECT COUNT(*) FROM leave_table WHERE userId = :userId AND type = 'Casual' AND status = 'Approved'")
+    fun getCasualUsed(userId: Long): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM leave_table WHERE userId = :userId AND type = 'Casual'")
+    fun getTotalCasual(userId: Long): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM leave_table WHERE userId = :userId AND type = 'Sick' AND status = 'Approved'")
+    fun getSickUsed(userId: Long): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM leave_table WHERE userId = :userId AND type = 'Sick'")
+    fun getTotalSick(userId: Long): Flow<Int>
 
 }

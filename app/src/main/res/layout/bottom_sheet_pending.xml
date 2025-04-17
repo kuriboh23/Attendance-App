@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/rounded_top_sheet"
+    android:padding="16dp">
+
+    <View
+        android:layout_width="80dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/drag_handle"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Request Pending"
+        android:textSize="18sp"
+
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/poppins_semibold"
+        android:layout_marginBottom="8dp"/>
+
+    <ImageView
+        android:layout_width="164dp"
+        android:layout_height="164dp"
+        android:layout_gravity="center"
+        android:src="@drawable/pending"
+
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:fontFamily="@font/poppins"
+        android:textColor="@color/gray_black"
+        android:text="Your request has been received and we \n will let you know as soon as possible." />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/home_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:backgroundTint="@color/mainColor"
+        android:paddingVertical="16dp"
+        android:text="Back to home"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:cornerRadius="10dp"
+        android:layout_marginTop="18dp"
+
+        app:strokeColor="@color/zxing_transparent"
+        />
+
+
+</LinearLayout>

@@ -1,6 +1,8 @@
 package com.example.project.data
 
 import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 
 class CheckRepository(private val attendanceDao: CheckDao) {
     val allAttendances: LiveData<List<Check>> = attendanceDao.getAllChecks()
@@ -74,11 +76,27 @@ class LeaveRepository(private val leaveDao: LeaveDao) {
         leaveDao.insertLeave(leave)
     }
 
-    fun deleteAllLeaves() {
-        leaveDao.deleteAllLeaves()
-        }
+    suspend fun deleteLeave(leave: Leave) {
+        leaveDao.deleteLeave(leave)
+    }
 
     fun getLeavesByMonth(monthYear: String, userId: Long): LiveData<List<Leave>> {
         return leaveDao.getLeavesByMonth(monthYear, userId)
+    }
+
+    fun getLeaveSummary(userId: Long): Flow<LeaveSummary> {
+        return combine(
+            leaveDao.getCasualUsed(userId),
+            leaveDao.getTotalCasual(userId),
+            leaveDao.getSickUsed(userId),
+            leaveDao.getTotalSick(userId)
+        ) { casualUsed, casualTotal, sickUsed, sickTotal ->
+            LeaveSummary(
+                casualUsed = casualUsed,
+                casualTotal = casualTotal,
+                sickUsed = sickUsed,
+                sickTotal = sickTotal
+            )
+        }
     }
 }

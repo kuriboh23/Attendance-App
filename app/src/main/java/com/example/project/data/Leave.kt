@@ -20,7 +20,10 @@ import androidx.room.PrimaryKey
 data class Leave(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val date: String,
+    val startDate: String,
+    val endDate: String,
     val type: String,
     val note: String,
+    val status: String,
     @ColumnInfo(name = "userId") val userId: Long
 )

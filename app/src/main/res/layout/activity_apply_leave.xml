@@ -90,13 +90,13 @@
 
 
     <TextView
-        android:id="@+id/txleave_date"
+        android:id="@+id/txleave_startDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
 
         android:fontFamily="@font/poppins_semibold"
-        android:text="Date *"
+        android:text="Start Date *"
         android:textColor="@color/gray_black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/leave_type_group" />
@@ -108,16 +108,49 @@
         android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txleave_date">
+        app:layout_constraintTop_toBottomOf="@+id/txleave_startDate">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/dateEditText"
+            android:id="@+id/start_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/editext_background"
             android:clickable="true"
             android:focusable="false"
-            android:hint="Select date"
+            android:hint="Select start date"
+            android:inputType="none"
+            android:textColor="@color/black" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/txleave_endDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+
+        android:fontFamily="@font/poppins_semibold"
+        android:text="End Date *"
+        android:textColor="@color/gray_black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateInputLayout" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dateInputLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txleave_endDate">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/end_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/editext_background"
+            android:clickable="true"
+            android:focusable="false"
+            android:hint="Select end date"
             android:inputType="none"
             android:textColor="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -133,7 +166,7 @@
         android:text="Note"
         android:textColor="@color/gray_black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateInputLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/dateInputLayout2" />
 
     <!-- Note -->
     <com.google.android.material.textfield.TextInputLayout
@@ -163,16 +196,6 @@
             android:textSize="16sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/apllyBtnLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/noteInputLayout" />
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/applyBtn"
         style="@style/Widget.Material3.Button.OutlinedButton"
@@ -196,6 +219,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:strokeColor="@color/zxing_transparent" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

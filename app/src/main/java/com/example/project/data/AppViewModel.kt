@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class CheckViewModel(application: Application) : AndroidViewModel(application) {
@@ -102,11 +103,13 @@ class TimeManagerViewModel(application: Application) : AndroidViewModel(applicat
 class LeaveViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: LeaveRepository
     val allLeaves: LiveData<List<Leave>>
+
     init {
         val leaveDao = AppDatabase.getDatabase(application).leaveDao()
         repository = LeaveRepository(leaveDao)
         allLeaves = repository.allLeaves
     }
+
     fun getAllUserLeaves(userId: Long): LiveData<List<Leave>> {
         return repository.getAllUserLeaves(userId)
     }
@@ -115,11 +118,17 @@ class LeaveViewModel(application: Application) : AndroidViewModel(application) {
             repository.insertLeave(leave)
         }
     }
-    fun deleteAllLeaves() {
+
+    fun deleteLeave(leave: Leave) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteAllLeaves()
+            repository.deleteLeave(leave)
         }
     }
+
+    fun getLeaveSummary(userId: Long): Flow<LeaveSummary> {
+        return repository.getLeaveSummary(userId)
+    }
+
     fun getLeavesByMonth(monthYear: String, userId: Long): LiveData<List<Leave>> {
         return repository.getLeavesByMonth(monthYear, userId)
     }
