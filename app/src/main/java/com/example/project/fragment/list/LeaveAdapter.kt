@@ -1,15 +1,22 @@
 package com.example.project.fragment.list
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project.R
 import com.example.project.data.Leave
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
-class LeaveAdapter : RecyclerView.Adapter<LeaveAdapter.LeaveViewHolder>() {
+class LeaveAdapter(
+    private val onItemClick: (Leave) -> Unit // Callback for item click
+) : RecyclerView.Adapter<LeaveAdapter.LeaveViewHolder>() {
 
     private var leaveList: List<Leave> = emptyList()
 
@@ -41,7 +48,13 @@ class LeaveAdapter : RecyclerView.Adapter<LeaveAdapter.LeaveViewHolder>() {
             "pending" -> ContextCompat.getColor(context, android.R.color.holo_orange_dark)
             else -> ContextCompat.getColor(context, android.R.color.black)
         }
-        holder.tvStatus.setTextColor(statusColor) }
+        holder.tvStatus.setTextColor(statusColor)
+
+        // Handle item click
+        holder.itemView.setOnClickListener {
+            onItemClick(leave)
+        }
+    }
 
     override fun getItemCount(): Int = leaveList.size
 
@@ -50,5 +63,4 @@ class LeaveAdapter : RecyclerView.Adapter<LeaveAdapter.LeaveViewHolder>() {
         leaveList = newLeaveList
         notifyDataSetChanged()
     }
-
 }

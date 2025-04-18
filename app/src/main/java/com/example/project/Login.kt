@@ -80,21 +80,3 @@ class Login:AppCompatActivity() {
     }
 }
 }
-
-
-
-//            if (email.isNotEmpty() && password.isNotEmpty()) {
-//                auth.signInWithEmailAndPassword(email, password)
-//                    .addOnCompleteListener(this) { task ->
-//                        if (task.isSuccessful) {
-//                            Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
-//                            val intent = Intent(this, HomeActivity::class.java)
-//                            startActivity(intent)
-//                            // Navigate to another activity
-//                        } else {
-//                            Toast.makeText(this, "Authentication failed: ${task.exception?.message}", Toast.LENGTH_LONG).show()
-//                        }
-//                    }
-//            } else {
-//                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
-//            }

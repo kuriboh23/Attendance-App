@@ -25,5 +25,6 @@ data class Leave(
     val type: String,
     val note: String,
     val status: String,
+    val attachmentPath: String?,
     @ColumnInfo(name = "userId") val userId: Long
 )

@@ -2,6 +2,7 @@ package com.example.project.fragment
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,19 +11,27 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.project.ApplyLeave
 import com.example.project.HomeActivity
 import com.example.project.R
 import com.example.project.UserPrefs
+import com.example.project.data.Leave
 import com.example.project.data.LeaveViewModel
 import com.example.project.databinding.FragmentLeaveBinding
 import com.example.project.fragment.list.LeaveAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
+import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import java.io.File
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class Leave : Fragment() {
     private lateinit var binding: FragmentLeaveBinding
@@ -37,8 +46,9 @@ class Leave : Fragment() {
             val date = data?.getStringExtra("DATE")
             val type = data?.getStringExtra("TYPE")
             val note = data?.getStringExtra("NOTE")
+            val attachmentPath = data?.getStringExtra("ATTACHMENT_PATH")
 
-            // Show the BottomSheetDialog
+            // Show the BottomSheetDialog for pending leave
             val dialog = BottomSheetDialog(requireContext())
             val view = layoutInflater.inflate(R.layout.bottom_sheet_pending, null)
             dialog.setCanceledOnTouchOutside(true)
@@ -66,7 +76,10 @@ class Leave : Fragment() {
 
         // Initialize RecyclerView
         binding.recyclerViewRequests.layoutManager = LinearLayoutManager(requireContext())
-        leaveAdapter = LeaveAdapter()
+        leaveAdapter = LeaveAdapter { leave ->
+            // Show bottom sheet with leave details
+            showLeaveDetailsBottomSheet(leave)
+        }
         binding.recyclerViewRequests.adapter = leaveAdapter
 
         // Initialize ViewModel
@@ -93,11 +106,10 @@ class Leave : Fragment() {
             }
         }
 
-
         // Show loading overlay
         binding.loadingOverlay.visibility = View.VISIBLE
 
-        // Fetch leaves for the current podczas gdy user
+        // Fetch leaves for the current user
         leaveViewModel.getAllUserLeaves(userId).observe(viewLifecycleOwner) { leaves ->
             binding.loadingOverlay.visibility = View.GONE // Hide loading overlay
             leaveAdapter.setData(leaves)
@@ -110,5 +122,84 @@ class Leave : Fragment() {
         }
 
         return binding.root
+    }
+
+    // Function to show leave details in a bottom sheet
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun showLeaveDetailsBottomSheet(leave: Leave) {
+        val dialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_leave_details, null)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setContentView(view)
+
+        // Find views in the bottom sheet layout
+        val tvDate = view.findViewById<TextView>(R.id.tvLeaveDetailDate)
+        val tvType = view.findViewById<TextView>(R.id.tvLeaveDetailType)
+        val tvStatus = view.findViewById<TextView>(R.id.tvLeaveDetailStatus)
+        val tvNote = view.findViewById<TextView>(R.id.tvLeaveDetailNote)
+        val tvAttachmentLabel = view.findViewById<TextView>(R.id.tvLeaveDetailAttachmentLabel)
+        val tvAttachment = view.findViewById<MaterialButton>(R.id.tvLeaveDetailAttachment)
+
+        // Set leave details
+        tvDate.text = getDayAbbreviation(leave.date)
+        tvType.text = leave.type
+        tvStatus.text = leave.status
+        tvNote.text = leave.note
+
+        // Set status text color
+        val statusColor = when (leave.status.lowercase()) {
+            "approved" -> ContextCompat.getColor(requireContext(), android.R.color.holo_green_dark)
+            "rejected" -> ContextCompat.getColor(requireContext(), android.R.color.holo_red_dark)
+            "pending" -> ContextCompat.getColor(requireContext(), android.R.color.holo_orange_dark)
+            else -> ContextCompat.getColor(requireContext(), android.R.color.black)
+        }
+        tvStatus.setTextColor(statusColor)
+
+        // Handle attachment
+        if (!leave.attachmentPath.isNullOrEmpty()) {
+            val file = File(leave.attachmentPath)
+            tvAttachment.text = "Show Attachment"
+
+            // Make attachment clickable to open the file
+            tvAttachment.setOnClickListener {
+                openFile(leave.attachmentPath)
+            }
+        }
+        dialog.show()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getDayAbbreviation(dateString: String): String {
+        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
+        val date = LocalDate.parse(dateString, inputFormatter)
+        val dayFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH) // "EEE" gives "Fri"
+        return date.format(dayFormatter)
+    }
+
+    // Function to open the attached file
+    private fun openFile(filePath: String) {
+        try {
+            val file = File(filePath)
+            if (!file.exists()) {
+                Toast.makeText(requireContext(), "File not found", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            val uri = FileProvider.getUriForFile(
+                requireContext(),
+                "${requireContext().packageName}.fileprovider",
+                file
+            )
+
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, requireContext().contentResolver.getType(uri) ?: "*/*")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+
+            startActivity(Intent.createChooser(intent, "Open file with"))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "Unable to open file", Toast.LENGTH_SHORT).show()
+        }
     }
 }
