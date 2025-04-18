@@ -60,10 +60,9 @@ class Login:AppCompatActivity() {
                 val savedUserId = user.id
                     UserPrefs.saveUserId(this, savedUserId)
 
-                    this.showCustomToast("Login Successful",R.layout.custom_toast)
-
                     // Login successful, navigate to the next activity
                     val intent = Intent(this, HomeActivity::class.java)
+                    this.showCustomToast("Login Successful",R.layout.custom_toast)
                     startActivity(intent)
                     finish()
                 }

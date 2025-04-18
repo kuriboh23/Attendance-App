@@ -188,10 +188,11 @@
                             android:textColor="@color/gray_black" />
 
                         <ImageView
+                            android:id="@+id/tvLeaveFilter"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_marginStart="8dp"
-                            android:src="@drawable/ic_home"
+                            android:src="@drawable/filter"
                             app:tint="@color/gray" />
                     </LinearLayout>
 

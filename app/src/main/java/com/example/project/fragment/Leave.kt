@@ -1,6 +1,5 @@
 package com.example.project.fragment
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -65,6 +64,7 @@ class Leave : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -106,6 +106,10 @@ class Leave : Fragment() {
             }
         }
 
+        binding.tvLeaveFilter.setOnClickListener {
+            showLeaveFilterBottomSheet(userId)
+        }
+
         // Show loading overlay
         binding.loadingOverlay.visibility = View.VISIBLE
 
@@ -122,6 +126,48 @@ class Leave : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun showLeaveFilterBottomSheet(userId : Long) {
+        val dialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_leave_filter, null)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setContentView(view)
+        dialog.show()
+
+        val tvLeaveStatusGroup = view.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.tvLeaveStatusGroup)
+        val tvLeaveTypeGroup = view.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.tvLeaveTypeGroup)
+        val tvLeaveReset = view.findViewById<MaterialButton>(R.id.tvLeaveReset)
+        val tvLeaveApply = view.findViewById<MaterialButton>(R.id.tvLeaveApply)
+
+        tvLeaveReset.setOnClickListener {
+            tvLeaveStatusGroup.clearChecked()
+            tvLeaveTypeGroup.clearChecked()
+        }
+
+        tvLeaveApply.setOnClickListener {
+            if (tvLeaveStatusGroup.checkedButtonId != -1 && tvLeaveTypeGroup.checkedButtonId != -1) {
+                val status = when (tvLeaveStatusGroup.checkedButtonId) {
+                    R.id.tvLeavePending -> "Pending"
+                    R.id.tvLeaveApproved -> "Approved"
+                    R.id.tvLeaveRejected -> "Rejected"
+                    else -> return@setOnClickListener
+                }
+
+                val type = when (tvLeaveTypeGroup.checkedButtonId) {
+                    R.id.tvLeaveCasual -> "Casual"
+                    R.id.tvLeaveSick -> "Sick"
+                    else -> return@setOnClickListener
+                }
+
+                // Observe the LiveData based on selected status and type
+                leaveViewModel.getLeavesByStatusAndType(userId, status, type).observe(viewLifecycleOwner) { leaves ->
+                    leaveAdapter.setData(leaves)
+                }
+
+                dialog.dismiss()
+            }
+        }
     }
 
     // Function to show leave details in a bottom sheet
@@ -147,13 +193,12 @@ class Leave : Fragment() {
         tvNote.text = leave.note
 
         // Set status text color
-        val statusColor = when (leave.status.lowercase()) {
-            "approved" -> ContextCompat.getColor(requireContext(), android.R.color.holo_green_dark)
-            "rejected" -> ContextCompat.getColor(requireContext(), android.R.color.holo_red_dark)
-            "pending" -> ContextCompat.getColor(requireContext(), android.R.color.holo_orange_dark)
-            else -> ContextCompat.getColor(requireContext(), android.R.color.black)
+        when (leave.status.lowercase()) {
+            "approved" -> tvStatus.setBackgroundResource(R.drawable.status_approved)
+            "rejected" -> tvStatus.setBackgroundResource(R.drawable.status_rejected)
+            "pending" -> tvStatus.setBackgroundResource(R.drawable.status_pending)
+            else -> null
         }
-        tvStatus.setTextColor(statusColor)
 
         // Handle attachment
         if (!leave.attachmentPath.isNullOrEmpty()) {
@@ -172,7 +217,7 @@ class Leave : Fragment() {
     fun getDayAbbreviation(dateString: String): String {
         val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
         val date = LocalDate.parse(dateString, inputFormatter)
-        val dayFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH) // "EEE" gives "Fri"
+        val dayFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH) // "EEE" gives "Fri"
         return date.format(dayFormatter)
     }
 

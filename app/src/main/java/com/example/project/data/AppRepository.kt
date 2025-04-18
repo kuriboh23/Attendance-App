@@ -84,6 +84,10 @@ class LeaveRepository(private val leaveDao: LeaveDao) {
         return leaveDao.getLeavesByMonth(monthYear, userId)
     }
 
+    fun getLeavesByStatusAndType(userId: Long, status: String, type: String): LiveData<List<Leave>> {
+        return leaveDao.getLeavesByStatusAndType(userId, status, type)
+    }
+
     fun getLeaveSummary(userId: Long): Flow<LeaveSummary> {
         return combine(
             leaveDao.getCasualUsed(userId),

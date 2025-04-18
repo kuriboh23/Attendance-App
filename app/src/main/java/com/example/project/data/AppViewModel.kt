@@ -125,6 +125,10 @@ class LeaveViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun getLeavesByStatusAndType(userId: Long, status: String, type: String): LiveData<List<Leave>> {
+        return repository.getLeavesByStatusAndType(userId, status, type)
+    }
+
     fun getLeaveSummary(userId: Long): Flow<LeaveSummary> {
         return repository.getLeaveSummary(userId)
     }

@@ -104,4 +104,6 @@ interface LeaveDao{
     @Query("SELECT COUNT(*) FROM leave_table WHERE userId = :userId AND type = 'Sick'")
     fun getTotalSick(userId: Long): Flow<Int>
 
+    @Query("SELECT * FROM leave_table WHERE userId = :userId AND status = :status AND type = :type")
+    fun getLeavesByStatusAndType(userId: Long, status: String, type: String): LiveData<List<Leave>>
 }

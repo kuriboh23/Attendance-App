@@ -73,6 +73,7 @@
                     android:src="@drawable/calendar_fill"
                     app:layout_constraintBottom_toBottomOf="@+id/tvText"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:tint="@color/gray"
                     app:layout_constraintTop_toTopOf="@+id/tvText" />
 
                 <LinearLayout
