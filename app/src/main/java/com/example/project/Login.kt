@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.project.data.CheckViewModel
 import com.example.project.data.UserViewModel
 import com.example.project.databinding.ActivityLoginBinding
+import com.example.project.function.function.showCustomToast
 
 class Login:AppCompatActivity() {
 
@@ -58,9 +59,10 @@ class Login:AppCompatActivity() {
                 if (user.password == password) {
                 val savedUserId = user.id
                     UserPrefs.saveUserId(this, savedUserId)
-                    Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
 
-                // Login successful, navigate to the next activity
+                    this.showCustomToast("Login Successful",R.layout.custom_toast)
+
+                    // Login successful, navigate to the next activity
                     val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)
                     finish()
