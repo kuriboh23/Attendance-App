@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/navigation"
+app:startDestination="@id/nav_home">
+
+<fragment
+    android:id="@+id/nav_home"
+    android:name="com.example.project.fragment.AdminHome"
+    android:label="Admin Home"
+    tools:layout="@layout/fragment_admin_home" >
+    <action
+        android:id="@+id/toAdminAttendance"
+        app:destination="@id/nav_attendance" />
+</fragment>
+
+<fragment
+    android:id="@+id/nav_attendance"
+    android:name="com.example.project.fragment.AdminAttendance"
+    android:label="Admin Attendance"
+    tools:layout="@layout/fragment_admin_attendance" />
+
+<fragment
+    android:id="@+id/nav_leave"
+    android:name="com.example.project.fragment.AdminLeave"
+    android:label="Admin Leave"
+    tools:layout="@layout/fragment_admin_leave" />
+
+<fragment
+    android:id="@+id/nav_salary"
+    android:name="com.example.project.fragment.AdminSalary"
+    android:label="Admin Salary"
+    tools:layout="@layout/fragment_admin_salary" />
+</navigation>

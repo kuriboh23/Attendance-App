@@ -59,12 +59,12 @@ class AdminHomeActivity : AppCompatActivity() {
     }
 
     @Deprecated("Deprecated in Java")
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
-        // If not on the start destination (AdminHome), go back to it
         if (navController.currentDestination?.id != R.id.nav_home) {
             navController.navigate(R.id.nav_home)
         } else {
-            super.onBackPressed()
+            finish()
         }
     }
 }
