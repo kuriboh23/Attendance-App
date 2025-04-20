@@ -96,8 +96,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Team Summary"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:textColor="@color/black"
+                        android:fontFamily="@font/poppins_bold"
+                        android:textColor="@color/mainColor"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -106,10 +106,11 @@
                         android:id="@+id/tvAdminDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
                         android:text="Apr 20, 2025"
                         android:textColor="@color/grayLight"
-                        android:fontFamily="@font/poppins"
                         android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/tvSummaryTitle"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/tvSummaryTitle" />
 
@@ -118,8 +119,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:columnCount="2"
-                        android:rowCount="2"
+                        android:columnCount="3"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvSummaryTitle">
@@ -130,7 +130,7 @@
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
                             android:layout_margin="4dp"
-                            app:cardBackgroundColor="#E6F0FA"
+                            app:cardBackgroundColor="@color/white"
                             app:cardCornerRadius="12dp"
                             app:cardElevation="0dp">
 
@@ -144,16 +144,19 @@
                                     android:id="@+id/tvPresentCount"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="25"
-                                    android:textColor="@android:color/black"
-                                    android:textSize="22sp"
-                                    android:textStyle="bold" />
+                                    android:layout_gravity="center"
+                                    android:text="5"
+
+                                    android:fontFamily="@font/poppins_semibold"
+                                    android:textColor="@color/mainColor"
+                                    android:textSize="22sp"/>
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Present"
-                                    android:textColor="#1A3C6D"
+                                    android:textColor="@color/gray_black"
+                                    android:layout_gravity="center"
                                     android:textSize="14sp" />
                             </LinearLayout>
                         </androidx.cardview.widget.CardView>
@@ -164,7 +167,7 @@
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
                             android:layout_margin="4dp"
-                            app:cardBackgroundColor="#FFE4E1"
+                            app:cardBackgroundColor="@color/white"
                             app:cardCornerRadius="12dp"
                             app:cardElevation="0dp">
 
@@ -179,15 +182,18 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="3"
-                                    android:textColor="@android:color/black"
-                                    android:textSize="22sp"
-                                    android:textStyle="bold" />
+                                    android:layout_gravity="center"
+
+                                    android:fontFamily="@font/poppins_semibold"
+                                    android:textColor="@color/status_rejected"
+                                    android:textSize="22sp" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Absent"
-                                    android:textColor="#CC6666"
+                                    android:layout_gravity="center"
+                                    android:textColor="@color/gray_black"
                                     android:textSize="14sp" />
                             </LinearLayout>
                         </androidx.cardview.widget.CardView>
@@ -198,7 +204,7 @@
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
                             android:layout_margin="4dp"
-                            app:cardBackgroundColor="#FFF8E1"
+                            app:cardBackgroundColor="@color/white"
                             app:cardCornerRadius="12dp"
                             app:cardElevation="0dp">
 
@@ -213,15 +219,19 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="2"
-                                    android:textColor="@android:color/black"
-                                    android:textSize="22sp"
-                                    android:textStyle="bold" />
+                                    android:layout_gravity="center"
+
+                                    android:fontFamily="@font/poppins_semibold"
+                                    android:textColor="@color/status_pending"
+                                    android:textSize="22sp"/>
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="On Leave"
-                                    android:textColor="#CCAA66"
+                                    android:text="Late"
+
+                                    android:textColor="@color/gray_black"
+                                    android:layout_gravity="center"
                                     android:textSize="14sp" />
                             </LinearLayout>
                         </androidx.cardview.widget.CardView>
@@ -234,31 +244,7 @@
                             android:layout_margin="4dp"
                             app:cardBackgroundColor="#F0FFF0"
                             app:cardCornerRadius="12dp"
-                            app:cardElevation="0dp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="10dp">
-
-                                <TextView
-                                    android:id="@+id/tvPendingCount"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="5"
-                                    android:textColor="@android:color/black"
-                                    android:textSize="22sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Pending"
-                                    android:textColor="#4CAF50"
-                                    android:textSize="14sp" />
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
+                            app:cardElevation="0dp"/>
                     </GridLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
@@ -271,7 +257,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="12dp"
                 android:layout_marginHorizontal="6dp"
-                app:cardBackgroundColor="@android:color/white"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -291,11 +277,11 @@
                             android:id="@+id/tvTeamAttendanceTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/poppins_bold"
                             android:text="Team Attendance"
-                            android:fontFamily="@font/poppins_semibold"
-                            android:textColor="@color/black"
-                            android:textSize="18sp"
-                            android:layout_weight="1" />
+                            android:textColor="@color/mainColor"
+                            android:textSize="18sp" />
 
                         <ImageView
                             android:id="@+id/teamFilter"

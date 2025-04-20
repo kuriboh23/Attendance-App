@@ -39,9 +39,9 @@ class UserAdapter(
         // Set status color
         val context = holder.itemView.context
         val statusColor = when (userWithStatus.status.lowercase()) {
-            "present" -> ContextCompat.getColor(context, android.R.color.holo_green_dark)
-            "absent" -> ContextCompat.getColor(context, android.R.color.holo_red_dark)
-            "late" -> ContextCompat.getColor(context, android.R.color.holo_orange_dark)
+            "present" -> ContextCompat.getColor(context, R.color.mainColor)
+            "absent" -> ContextCompat.getColor(context, R.color.status_rejected)
+            "late" -> ContextCompat.getColor(context, R.color.status_pending)
             else -> ContextCompat.getColor(context, android.R.color.black)
         }
         holder.userStatus.setTextColor(statusColor)
