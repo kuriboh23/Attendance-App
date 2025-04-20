@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/toast_background"
+    android:backgroundTint="@color/error_red"
     android:orientation="horizontal"
     android:paddingHorizontal="14dp"
     android:paddingVertical="10dp"
@@ -9,17 +10,20 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical">
 
-<!--    <ImageView
+    <ImageView
         android:id="@+id/toastIcon"
-        android:src="@drawable/login"
+        android:src="@drawable/error_red"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginEnd="10dp" />-->
+        android:layout_marginEnd="10dp"
+        app:tint="@color/white" />
 
     <TextView
         android:id="@+id/toastText"
         android:textColor="@color/white"
         android:textSize="14sp"
+        android:layout_gravity="center"
+        android:textAlignment="center"
         android:text="Toast"
         android:fontFamily="@font/poppins"
         android:layout_width="wrap_content"

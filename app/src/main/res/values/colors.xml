@@ -6,7 +6,7 @@
     <color name="secondColor">#DBE2EF</color>
     <color name="mainColor">#3C67FD</color>
     <color name="darkBlue">#112D4E </color>
-    <color name="gray">#D3D3D3 </color>
+    <color name="gray">#C1C1C1 </color>
     <color name="grayLight">#888888</color>
     <color name="checkOut">#F08080</color>
     <color name="checkOutLight">#DEF48787</color>
@@ -18,4 +18,8 @@
     <color name="status_pending">#FFA500</color>
     <color name="status_rejected">#ffcc0000</color>
     <color name="status_approved">#ff669900</color>
+
+    <color name="error_yellow">#FEB100</color>
+    <color name="error_red">#FF1F1F</color>
+
 </resources>

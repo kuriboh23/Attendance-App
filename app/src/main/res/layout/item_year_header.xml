@@ -24,7 +24,7 @@
         android:id="@+id/expand_icon"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@drawable/arrow_down"
+        android:src="@drawable/down_arrow"
         android:rotation="0"/>
 </LinearLayout>
     <View

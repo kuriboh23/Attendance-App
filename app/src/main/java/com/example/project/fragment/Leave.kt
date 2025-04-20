@@ -11,8 +11,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.project.ApplyLeave
-import com.example.project.HomeActivity
+import com.example.project.activities.ApplyLeave
+import com.example.project.activities.HomeActivity
 import com.example.project.R
 import com.example.project.UserPrefs
 import com.example.project.data.Leave
@@ -25,7 +25,6 @@ import kotlinx.coroutines.launch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import java.io.File
 import java.time.LocalDate

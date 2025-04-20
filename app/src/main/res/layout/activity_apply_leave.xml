@@ -9,11 +9,11 @@
 
     <ImageView
         android:id="@+id/tvback_arrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/arrow_left" />
+        app:srcCompat="@drawable/left_arrow" />
 
     <TextView
         android:id="@+id/tvleave_title"

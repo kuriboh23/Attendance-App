@@ -100,7 +100,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/guest_title" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/guest_ok_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
                 android:background="@drawable/rounded_filled_button"
                 android:backgroundTint="@color/white"
                 android:text="Okay"
-                android:textColor="@color/darkBlue"
+                android:textColor="@color/mainColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
 

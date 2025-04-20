@@ -1,4 +1,4 @@
-package com.example.project
+package com.example.project.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.google.firebase.auth.FirebaseAuth
+import com.example.project.R
+import com.example.project.UserPrefs
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
 
         guest_access.setOnClickListener {
-            val intent = Intent(this,GuestActivity::class.java)
+            val intent = Intent(this, GuestActivity::class.java)
             startActivity(intent)
         }
         createAcountBtn.setOnClickListener {
@@ -37,10 +38,18 @@ class MainActivity : AppCompatActivity() {
 
         val isLoggedIn = UserPrefs.isLoggedIn(this)
         if (isLoggedIn) {
-            // User is already logged in, go to home screen
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-            finish()
+            if (UserPrefs.getUserRole(this) == "user") {
+                // User is logged in, go to home screen
+                val intent = Intent(this, HomeActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                // Admin is logged in, go to admin home screen
+                val intent = Intent(this, AdminHomeActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+
         }
     }
 }

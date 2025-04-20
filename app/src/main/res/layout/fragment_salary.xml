@@ -70,10 +70,9 @@
                     android:id="@+id/filterMouth"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/calendar_fill"
+                    android:src="@drawable/calendar_v1"
                     app:layout_constraintBottom_toBottomOf="@+id/tvText"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:tint="@color/gray"
                     app:layout_constraintTop_toTopOf="@+id/tvText" />
 
                 <LinearLayout

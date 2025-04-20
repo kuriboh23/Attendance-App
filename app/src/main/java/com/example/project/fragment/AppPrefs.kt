@@ -62,6 +62,7 @@ object CheckInPrefs {
 object UserPrefs{
     private const val PREF_NAME = "user_data"
     private const val KEY_USER_ID = "user_id"
+    private const val KEY_IS_LOGGED_IN = "is_logged_in"
 
     private fun getUserPrefs(context: Context): SharedPreferences {
         return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -85,8 +86,24 @@ object UserPrefs{
         }
     }
 
+    fun savedIsLoggedIn(context: Context, isLoggedIn: Boolean) {
+        getUserPrefs(context).edit().apply {
+            putBoolean(KEY_IS_LOGGED_IN, isLoggedIn)
+            apply()
+        }
+    }
+
     fun isLoggedIn(context: Context): Boolean {
-        return getUserPrefs(context).contains(KEY_USER_ID)
+        return getUserPrefs(context).getBoolean(KEY_IS_LOGGED_IN, false)
+    }
+    fun saveUserRole(context: Context, role: String) {
+        getUserPrefs(context).edit().apply {
+            putString("role", role)
+            apply()
+        }
+    }
+    fun getUserRole(context: Context): String? {
+        return getUserPrefs(context).getString("role", null)
     }
 
 }

@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.project.CheckInPrefs
 import com.example.project.R
-import com.example.project.ScanActivity
+import com.example.project.activities.ScanActivity
 import com.example.project.UserPrefs
 import com.example.project.data.CheckViewModel
 import com.example.project.data.Check
@@ -25,6 +25,7 @@ import com.example.project.data.TimeManager
 import com.example.project.data.TimeManagerViewModel
 import com.example.project.data.UserViewModel
 import com.example.project.databinding.FragmentHomeBinding
+import com.example.project.function.function.showCustomToast
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -70,11 +71,7 @@ class Home : Fragment() {
             if (isGranted) {
                 startQrScan()
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Camera permission is required to scan",
-                    Toast.LENGTH_SHORT
-                ).show()
+                requireContext().showCustomToast("Camera permission is required to scan", R.layout.error_toast)
             }
         }
 
@@ -219,7 +216,7 @@ class Home : Fragment() {
                 checkOutFunction()
             }
         } else {
-            Toast.makeText(requireContext(), "Invalid QR Code", Toast.LENGTH_SHORT).show()
+            requireContext().showCustomToast("Invalid QR Code", R.layout.error_toast)
         }
     }
 
@@ -270,7 +267,7 @@ class Home : Fragment() {
     ) {
         val check = Check(0, date, checkInTime, checkOutTime, durationInSecond, userId.toLong())
         attendanceViewModel.addCheck(check)
-        Toast.makeText(requireContext(), "Successfully added!", Toast.LENGTH_LONG).show()
+        requireContext().showCustomToast("Successfully added check!", R.layout.success_toast)
     }
 
     private fun startUpdatingTime() {
@@ -303,8 +300,7 @@ class Home : Fragment() {
         val now = System.currentTimeMillis()
         val currentHour = SimpleDateFormat("HH", Locale.getDefault()).format(Date(now)).toInt()
 
-        // Already past 12 PM? Run immediately and mark it as done
-        if (currentHour >= 24) {
+        if (currentHour >= 15) {
             timeManager()
             // Save today's date to avoid running again
             prefs.edit().putString("summary_last_run_date", today).apply()
@@ -319,7 +315,7 @@ class Home : Fragment() {
                     SimpleDateFormat("HH", Locale.getDefault()).format(Date(now)).toInt()
                 val currentMinute = minutesFormat.format(Date(now)).toInt()
 
-                if (currentHour >= 24) {
+                if (currentHour >= 15) {
                     timeManager()
 
                     // Save today's date to mark as done
@@ -362,7 +358,8 @@ class Home : Fragment() {
                 val timeManager =
                     TimeManager(0, currentDateStr, workTime, extraTime, absent, userId.toLong())
                 timeManagerViewModel.insertTimeManager(timeManager)
-                Toast.makeText(requireContext(), "Successfully added!", Toast.LENGTH_LONG).show()
+
+                requireContext().showCustomToast("Successfully added time!", R.layout.success_toast)
             }
         }
     }

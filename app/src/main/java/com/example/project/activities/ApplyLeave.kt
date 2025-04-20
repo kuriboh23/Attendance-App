@@ -1,6 +1,5 @@
-package com.example.project
+package com.example.project.activities
 
-import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -12,6 +11,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.example.project.R
+import com.example.project.UserPrefs
 import com.example.project.data.Leave
 import com.example.project.data.LeaveViewModel
 import com.example.project.databinding.ActivityApplyLeaveBinding
@@ -209,7 +210,6 @@ class ApplyLeave : AppCompatActivity() {
         val leave = Leave(0,currentDateStr,startDate,endDate,type,note,"Pending",savedFilePath,userId)
         leaveViewModel.insertLeave(leave)
 
-        Toast.makeText(this, "Leave request submitted", Toast.LENGTH_SHORT).show()
         finish()
     }
 }

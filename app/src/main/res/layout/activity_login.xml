@@ -58,6 +58,7 @@
             android:textColor="@color/mainColor"
             android:textStyle="bold"
             android:layout_marginTop="12dp"
+            android:visibility="invisible"
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/signup_msg" />
@@ -111,17 +112,19 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <CheckBox
+        <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/privacyChekbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
 
-            android:buttonTint="@color/mainColor"
             android:fontFamily="@font/poppins"
             android:text="Keep me logged in "
+            android:gravity="center"
+            android:paddingHorizontal="8dp"
 
             android:textColor="@color/black"
+            app:buttonIconTint="@color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/passwordInput" />
 

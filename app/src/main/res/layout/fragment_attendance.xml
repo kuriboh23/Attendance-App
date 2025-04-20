@@ -73,8 +73,7 @@
                         android:id="@+id/filterMouth"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        app:tint="@color/gray"
-                        android:src="@drawable/calendar_fill"
+                        android:src="@drawable/calendar_v1"
                         app:layout_constraintBottom_toBottomOf="@+id/tvMonthYear"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/tvMonthYear" />

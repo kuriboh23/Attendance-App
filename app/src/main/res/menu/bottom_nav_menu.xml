@@ -3,20 +3,22 @@
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home_selector"
         android:title="Home"/>
+
     <item
         android:id="@+id/nav_attendance"
         android:icon="@drawable/ic_attend_selector"
         android:title="Profile"/>
     <item
         android:id="@+id/nav_leave"
-        android:icon="@drawable/ic_calender_selector"
+        android:icon="@drawable/ic_leave_selector"
         android:title="Leaves"/>
+
     <item
         android:id="@+id/nav_salary"
-        android:icon="@drawable/ic_attend_selector"
+        android:icon="@drawable/ic_salary_selector"
         android:title="Salary"/>
     <item
-        android:id="@+id/nav_signOut"
-        android:icon="@drawable/ic_home_selector"
-        android:title="Sign Out"/>
+        android:id="@+id/nav_notify"
+        android:icon="@drawable/ic_notify_selector"
+        android:title="Notifications"/>
 </menu>

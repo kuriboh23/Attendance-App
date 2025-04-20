@@ -9,11 +9,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.project.R
 import com.example.project.UserPrefs
 import com.example.project.data.CheckViewModel
 import com.example.project.data.TimeManagerViewModel
 import com.example.project.databinding.FragmentAttendanceBinding
 import com.example.project.fragment.list.CheckAdapter
+import com.example.project.function.function.showCustomToast
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -137,7 +139,7 @@ class Attendance : Fragment() {
                         binding.summaryText.text = "Summary of $monthName"
                         binding.weeksText.text = "Week $weekOfMonth"
                     } else {
-                        Toast.makeText(requireContext(), "No Checks found", Toast.LENGTH_SHORT).show()
+                        requireContext().showCustomToast("No Checks found", R.layout.error_toast)
                     }
                 }
 

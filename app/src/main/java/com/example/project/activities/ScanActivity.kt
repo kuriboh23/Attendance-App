@@ -1,17 +1,16 @@
-package com.example.project
+package com.example.project.activities
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.google.zxing.Result
+import com.example.project.R
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.CompoundBarcodeView
 import com.journeyapps.barcodescanner.DefaultDecoderFactory
 import com.google.zxing.BarcodeFormat
-import java.util.*
 
 class ScanActivity : AppCompatActivity() {
 

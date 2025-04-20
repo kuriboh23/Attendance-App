@@ -1,4 +1,4 @@
-package com.example.project
+package com.example.project.activities
 
 import android.Manifest
 import android.content.Intent
@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.project.R
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -123,7 +124,9 @@ class HomeActivity00 : AppCompatActivity() {
                 checkBtnName.text = "Check Out"
 
                 scanButton.setCardBackgroundColor(ContextCompat.getColor(this, R.color.checkOut))
-                cardCheckInButton.setCardBackgroundColor(ContextCompat.getColor(this, R.color.checkOutLight))
+                cardCheckInButton.setCardBackgroundColor(ContextCompat.getColor(this,
+                    R.color.checkOutLight
+                ))
 
 //                checkOutTimeText.text = "00:00"
             } else {
@@ -134,7 +137,9 @@ class HomeActivity00 : AppCompatActivity() {
                 checkBtnName.text = "Check In"
 
                 scanButton.setCardBackgroundColor(ContextCompat.getColor(this, R.color.mainColor))
-                cardCheckInButton.setCardBackgroundColor(ContextCompat.getColor(this, R.color.secondColor))
+                cardCheckInButton.setCardBackgroundColor(ContextCompat.getColor(this,
+                    R.color.secondColor
+                ))
 
                 // Calculate the duration
                 val durationMillis = checkOutTimeMillis - (checkInTime ?: 0L)

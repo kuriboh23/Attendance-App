@@ -58,7 +58,7 @@
 
                 android:textColor="@color/white"
                 android:fontFamily="@font/poppins_semibold"
-                android:text="Mon" />
+                android:text="Wed" />
         </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -156,9 +156,9 @@
 
             <ImageView
                 android:id="@+id/imgTotalHours"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/clock_done_v2" />
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:src="@drawable/check_done_fill" />
 
             <TextView
                 android:id="@+id/tvTotalHours"
