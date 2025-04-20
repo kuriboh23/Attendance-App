@@ -99,6 +99,7 @@ class Home : Fragment() {
 
         binding.tvDate.text = "$month $day, $year - $dayName"
 
+
         startTimeCheck(requireContext())
 
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
@@ -185,6 +186,7 @@ class Home : Fragment() {
         if (scannedText == requiredQrText) {
             val now = System.currentTimeMillis()
             if (isCheckedIn == false) {
+
                 // First scan: Check-in
                 checkInTime = now
                 val checkInString = timeFormatterHM.format(Date(now))

@@ -10,11 +10,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.project.R
+import com.example.project.UserPrefs
 import com.example.project.data.CheckViewModel
 import com.example.project.data.UserViewModel
 import com.example.project.databinding.FragmentAdminHomeBinding
 import com.example.project.fragment.adapters.UserAdapter
 import com.example.project.fragment.adapters.UserWithStatus
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.button.MaterialButtonToggleGroup
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -26,29 +30,46 @@ class AdminHome : Fragment() {
     private lateinit var checkViewModel: CheckViewModel
     private lateinit var userAdapter: UserAdapter
     private val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+    val adminDate = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(Date())
+    val userWithStatusList = mutableListOf<UserWithStatus>()
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAdminHomeBinding.inflate(inflater, container, false)
 
+        binding.tvAdminDate.text = adminDate
+
+        // Show loading overlay while loading initial data
+        binding.loadingOverlay.visibility = View.VISIBLE
+
+        binding.teamFilter.setOnClickListener {
+            showUserFilterBottomSheet()
+        }
+
         // Initialize UserAdapter with click callback
         userAdapter = UserAdapter(emptyList()) { user ->
             val bundle = Bundle().apply {
-                putLong("userId", user.id)
+                putLong("homeUserId", user.id)
             }
             findNavController().navigate(R.id.toAdminAttendance, bundle)
         }
+
         binding.rvUsers.layoutManager = LinearLayoutManager(requireContext())
         binding.rvUsers.adapter = userAdapter
 
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
         checkViewModel = ViewModelProvider(this)[CheckViewModel::class.java]
 
+        val userId = UserPrefs.loadUserId(requireContext())
+        userViewModel.getUserById(userId).observe(viewLifecycleOwner) { user ->
+            binding.tvAdminGreeting.text = "Hello, ${user.lastName}"
+
+        }
+
         userViewModel.allUsers.observe(viewLifecycleOwner) { users ->
-            val userWithStatusList = mutableListOf<UserWithStatus>()
             var presentCount = 0
             var absentCount = 0
             var leaveCount = 0
@@ -88,6 +109,9 @@ class AdminHome : Fragment() {
                             binding.tvAbsentCount.text = absentCount.toString()
                             binding.tvLeaveCount.text = leaveCount.toString()
                             userAdapter.notifyDataSetChanged()
+
+                            // Hide loading overlay after initial data is loaded
+                            binding.loadingOverlay.visibility = View.GONE
                         }
                     }
             }
@@ -110,5 +134,38 @@ class AdminHome : Fragment() {
         }
 
         return Pair(hours, minutes)
+    }
+
+    @SuppressLint("MissingInflatedId")
+    private fun showUserFilterBottomSheet() {
+        val dialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_user_filter, null)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setContentView(view)
+        dialog.show()
+
+        val usersStatusGroup = view.findViewById<MaterialButtonToggleGroup>(R.id.userStatusGroup)
+        val reset = view.findViewById<MaterialButton>(R.id.btReset)
+        val apply = view.findViewById<MaterialButton>(R.id.btApply)
+
+        reset.setOnClickListener {
+            usersStatusGroup.clearChecked()
+        }
+
+        apply.setOnClickListener {
+            if (usersStatusGroup.checkedButtonId != -1) {
+                val status = when (usersStatusGroup.checkedButtonId) {
+                    R.id.usersPresent -> "Present"
+                    R.id.usersAbsent -> "Absent"
+                    R.id.usersLate -> "Late"
+                    else -> return@setOnClickListener
+                }
+
+                val newUsersList = userWithStatusList.filter { it.status == status }
+                userAdapter.updateUsers(newUsersList)
+
+                dialog.dismiss()
+            }
+        }
     }
 }
