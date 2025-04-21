@@ -84,7 +84,7 @@ class AdminAttendance : Fragment() {
 
                     checkAdapter.updateChecks(checks)
                     binding.tvMonthYear.text = monthNameYear
-                    binding.summaryText.text = "Summary of $monthName"
+//                    binding.summaryText.text = "Summary of $monthName"
                     binding.weeksText.text = "Week $weekOfMonth"
                 }
             binding.filterMonth.setOnClickListener {
@@ -103,7 +103,7 @@ class AdminAttendance : Fragment() {
         val weekOfMonth = Calendar.getInstance().get(Calendar.WEEK_OF_MONTH)
 
         binding.tvMonthYear.text = monthNameYear
-        binding.summaryText.text = "Summary of $monthName"
+//        binding.summaryText.text = "Summary of $monthName"
         binding.weeksText.text = "Week $weekOfMonth"
 
         return binding.root
@@ -148,7 +148,7 @@ class AdminAttendance : Fragment() {
                     if (checks.isNotEmpty()) {
                         checkAdapter.updateChecks(checks)
                         binding.tvMonthYear.text = monthNameYear
-                        binding.summaryText.text = "Summary of $monthName"
+//                        binding.summaryText.text = "Summary of $monthName"
                         binding.weeksText.text = "Week $weekOfMonth"
                     } else {
                         requireContext().showCustomToast("No Checks found", R.layout.error_toast)

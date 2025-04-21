@@ -31,7 +31,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="18dp"
                 android:fontFamily="@font/poppins_bold"
-                android:text="Team Leave Management"
+                android:text="Team Leaves"
                 android:textColor="@color/mainColor"
                 android:textSize="24sp" />
 
@@ -59,7 +59,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_semibold"
                         android:text="Team Leave Overview"
-                        android:textColor="@color/gray_black" />
+                        android:textColor="@color/mainColor" />
 
                     <!-- Team Statistics -->
                     <GridLayout
