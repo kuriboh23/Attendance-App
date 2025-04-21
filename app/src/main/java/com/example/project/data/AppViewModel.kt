@@ -133,6 +133,10 @@ class LeaveViewModel(application: Application) : AndroidViewModel(application) {
         return repository.getLeaveSummary(userId)
     }
 
+    fun getLeavesByStatus(status: String): LiveData<List<Leave>> {
+        return repository.getLeavesByStatus(status)
+    }
+
     fun getLeavesByMonth(monthYear: String, userId: Long): LiveData<List<Leave>> {
         return repository.getLeavesByMonth(monthYear, userId)
     }

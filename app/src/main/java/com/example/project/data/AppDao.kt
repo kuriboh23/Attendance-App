@@ -106,4 +106,7 @@ interface LeaveDao{
 
     @Query("SELECT * FROM leave_table WHERE userId = :userId AND status = :status AND type = :type")
     fun getLeavesByStatusAndType(userId: Long, status: String, type: String): LiveData<List<Leave>>
+
+    @Query("SELECT * FROM leave_table WHERE status = :status")
+    fun getLeavesByStatus(status: String): LiveData<List<Leave>>
 }

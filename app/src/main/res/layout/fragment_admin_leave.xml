@@ -211,33 +211,85 @@
                             android:textColor="@color/gray_black" />
 
                         <ImageView
-                            android:id="@+id/tvLeaveFilter"
+                            android:id="@+id/leaveFilter"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_marginStart="8dp"
                             android:src="@drawable/filter" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvEmptyState"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="No pending leave requests"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="16dp"
-                        android:visibility="gone"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:textColor="@color/gray_black" />
-
-                    <!-- RecyclerView for Pending Leave Requests -->
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewPendingRequests"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/linearLayout6"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:nestedScrollingEnabled="false"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:listitem="@layout/item_leave_request" />
+                        android:layout_marginTop="12dp"
+                        android:layout_gravity="center_horizontal">
+
+                        <!-- Button 1: ALL (Highlighted) -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnAll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:text="ALL"
+                            android:textColor="@color/white"
+                            app:backgroundTint="@color/mainColor"
+                            app:cornerRadius="20dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/btnSick"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.5" />
+
+                        <!-- Button 2: Casual -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnCasual"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:text="Casual"
+                            android:textColor="@color/black"
+                            app:backgroundTint="@color/white"
+                            app:cornerRadius="20dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/btnSick"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.5" />
+
+                        <!-- Button 3: Sick -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSick"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:text="Sick"
+                            android:textColor="@color/black"
+                            app:backgroundTint="@color/white"
+                            app:cornerRadius="20dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/btnCasual"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/btnAll"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.5" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                        <!-- RecyclerView for Pending Leave Requests -->
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvLeaves"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:nestedScrollingEnabled="false"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:layout_editor_absoluteY="8dp"
+                            tools:listitem="@layout/item_leave_request" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>

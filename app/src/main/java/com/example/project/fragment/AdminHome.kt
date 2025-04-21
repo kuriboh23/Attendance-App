@@ -67,9 +67,13 @@ class AdminHome : Fragment() {
         userViewModel.getUserById(userId).observe(viewLifecycleOwner) { user ->
             binding.tvAdminGreeting.text = "Hello, ${user.lastName}"
 
+            binding.loadingOverlay.visibility = View.GONE
         }
 
         userViewModel.allUsers.observe(viewLifecycleOwner) { users ->
+
+            binding.loadingOverlay.visibility = View.VISIBLE
+
             var presentCount = 0
             var absentCount = 0
             var leaveCount = 0
