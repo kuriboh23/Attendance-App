@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.project.R
@@ -37,6 +38,7 @@ class AdminLeave : Fragment() {
 
         leaveViewModel = ViewModelProvider(this)[LeaveViewModel::class.java]
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+
 
         // Observe leaves and users once
         leaveViewModel.allLeaves.observe(viewLifecycleOwner) { leaves ->
@@ -102,19 +104,6 @@ class AdminLeave : Fragment() {
         val reset = view.findViewById<MaterialButton>(R.id.reset)
         val apply = view.findViewById<MaterialButton>(R.id.apply)
 
-/*        // Pre-check the toggle group based on the current filter
-        currentStatusFilter?.let { status ->
-            val buttonId = when (status) {
-                "Pending" -> R.id.leavePending
-                "Approved" -> R.id.leaveApproved
-                "Rejected" -> R.id.leaveRejected
-                else -> -1
-            }
-            if (buttonId != -1) {
-                leaveStatusGroup.check(buttonId)
-            }
-        }*/
-
         reset.setOnClickListener {
             leaveStatusGroup.clearChecked()
         }
@@ -145,9 +134,13 @@ class AdminLeave : Fragment() {
         currentStatusFilter?.let { status ->
             filteredLeaves = filteredLeaves.filter { it.status == status }
         }
-
-        leaveAdapter = LeaveAdapter(filteredLeaves, userMap)
+        leaveAdapter = LeaveAdapter { leave ->
+            // Show bottom sheet with leave details
+            showLeaveDetailsBottomSheet(leave)
+        }
         binding.rvLeaves.adapter = leaveAdapter
+
+        leaveAdapter.setData(filteredLeaves, userMap)
     }
 
     private fun setButtonState(selectedButton: MaterialButton) {
@@ -169,4 +162,15 @@ class AdminLeave : Fragment() {
             setTextColor(ContextCompat.getColor(context, android.R.color.white))
         }
     }
+
+    private fun showLeaveDetailsBottomSheet(leave: Leave) {
+        val dialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_admin_leave_details, null)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setContentView(view)
+
+
+        dialog.show()
+    }
+
 }

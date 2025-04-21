@@ -81,8 +81,7 @@ class AdminHome : Fragment() {
             val filteredUsers = users.filter { it.role == "user" }
 
             filteredUsers.forEach { user ->
-                checkViewModel.getChecksUserByDate(currentDate, user.id)
-                    .observe(viewLifecycleOwner) { checks ->
+                checkViewModel.getChecksUserByDate(currentDate, user.id).observe(viewLifecycleOwner) { checks ->
                         val status: String = if (checks.isNotEmpty()) {
                             var isLate = false
                             checks.forEach { check ->
@@ -112,6 +111,7 @@ class AdminHome : Fragment() {
                             binding.tvPresentCount.text = presentCount.toString()
                             binding.tvAbsentCount.text = absentCount.toString()
                             binding.tvLeaveCount.text = leaveCount.toString()
+
                             userAdapter.notifyDataSetChanged()
 
                             // Hide loading overlay after initial data is loaded

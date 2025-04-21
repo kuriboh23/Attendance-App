@@ -11,9 +11,11 @@ import com.example.project.data.Leave
 import com.example.project.data.User
 
 class LeaveAdapter(
-    private val leaves: List<Leave>,
-    private val userMap: Map<Long, User> // Map of userId to User
+    private val onLeaveClick: (Leave) -> Unit
 ) : RecyclerView.Adapter<LeaveAdapter.LeaveViewHolder>() {
+
+    private var leaveList: List<Leave> = emptyList()
+    private var userMap: Map<Long, User> = emptyMap()
 
     class LeaveViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvFullName: TextView = itemView.findViewById(R.id.tvFullName)
@@ -28,7 +30,7 @@ class LeaveAdapter(
     }
 
     override fun onBindViewHolder(holder: LeaveViewHolder, position: Int) {
-        val leave = leaves[position]
+        val leave = leaveList[position]
         val user = userMap[leave.userId] // Get the user from the map
         holder.tvFullName.text = if (user != null) {
             "${user.lastName} ${user.name}"
@@ -46,9 +48,21 @@ class LeaveAdapter(
             else -> ContextCompat.getColor(context, android.R.color.black)
         }
         holder.tvStatus.setTextColor(statusColor)
+
+        holder.itemView.setOnClickListener {
+            onLeaveClick(leave)
+        }
     }
 
     override fun getItemCount(): Int {
-        return leaves.size
+        return leaveList.size
     }
+
+    fun setData(newLeaveList: List<Leave>, newUserMap: Map<Long, User>) {
+        leaveList = newLeaveList
+        userMap = newUserMap
+        notifyDataSetChanged()
+
+    }
+
 }

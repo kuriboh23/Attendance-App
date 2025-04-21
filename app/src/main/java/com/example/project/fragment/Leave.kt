@@ -182,7 +182,6 @@ class Leave : Fragment() {
         val tvType = view.findViewById<TextView>(R.id.tvLeaveDetailType)
         val tvStatus = view.findViewById<TextView>(R.id.tvLeaveDetailStatus)
         val tvNote = view.findViewById<TextView>(R.id.tvLeaveDetailNote)
-        val tvAttachmentLabel = view.findViewById<TextView>(R.id.tvLeaveDetailAttachmentLabel)
         val tvAttachment = view.findViewById<MaterialButton>(R.id.tvLeaveDetailAttachment)
 
         // Set leave details
