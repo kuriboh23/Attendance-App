@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.project.R
 import com.example.project.UserPrefs
 import com.example.project.activities.MainActivity
+import com.example.project.activities.Userdetails
 import com.example.project.data.CheckViewModel
 import com.example.project.data.UserViewModel
 import com.example.project.databinding.FragmentAdminHomeBinding
@@ -55,12 +56,19 @@ class AdminHome : Fragment() {
             showUserFilterBottomSheet()
         }
 
-        // Initialize UserAdapter with click callback
+       /* // Initialize UserAdapter with click callback
         userAdapter = UserAdapter(emptyList()) { user ->
             val bundle = Bundle().apply {
                 putLong("homeUserId", user.id)
             }
             findNavController().navigate(R.id.toAdminAttendance, bundle)
+        }*/
+
+        userAdapter = UserAdapter(emptyList()) { user ->
+            val intent = Intent(requireContext(),Userdetails::class.java).apply {
+                putExtra("userId", user.id)
+            }
+            startActivity(intent)
         }
 
         binding.rvUsers.layoutManager = LinearLayoutManager(requireContext())
@@ -82,7 +90,7 @@ class AdminHome : Fragment() {
 
             var presentCount = 0
             var absentCount = 0
-            var leaveCount = 0
+            var lateCount = 0
 
             val filteredUsers = users.filter { it.role == "user" }
 
@@ -99,7 +107,7 @@ class AdminHome : Fragment() {
                                 }
                             }
                             if (isLate) {
-                                leaveCount++
+                                lateCount++
                                 "Late"
                             } else {
                                 presentCount++
@@ -116,7 +124,7 @@ class AdminHome : Fragment() {
                             userAdapter.updateUsers(userWithStatusList)
                             binding.tvPresentCount.text = presentCount.toString()
                             binding.tvAbsentCount.text = absentCount.toString()
-                            binding.tvLeaveCount.text = leaveCount.toString()
+                            binding.tvLateCount.text = lateCount.toString()
 
                             userAdapter.notifyDataSetChanged()
 

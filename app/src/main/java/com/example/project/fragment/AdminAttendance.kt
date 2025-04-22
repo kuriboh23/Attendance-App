@@ -51,7 +51,7 @@ class AdminAttendance : Fragment() {
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
         checkViewModel = ViewModelProvider(this)[CheckViewModel::class.java]
 
-        // Get userId from arguments
+       /* // Get userId from arguments
         val userId = arguments?.getLong("homeUserId")
 
         if (userId != null) {
@@ -90,7 +90,7 @@ class AdminAttendance : Fragment() {
             binding.filterMonth.setOnClickListener {
                 filterByMonth(userId, dateFormatter)
             }
-        }
+        }*/
 
         binding.searchUser.setOnClickListener {
             showUseSearchBottomSheet()
@@ -161,7 +161,7 @@ class AdminAttendance : Fragment() {
         }
     }
 
-    @SuppressLint("MissingInflatedId", "RestrictedApi")
+    @SuppressLint("MissingInflatedId", "RestrictedApi", "ResourceAsColor")
     private fun showUseSearchBottomSheet() {
         val dialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.bottom_sheet_user_search, null)
@@ -177,7 +177,8 @@ class AdminAttendance : Fragment() {
             androidx.appcompat.R.id.search_src_text
         )
         searchAutoComplete.setTextColor(Color.BLACK)
-        searchAutoComplete.setHintTextColor(Color.BLACK)
+        searchAutoComplete.setHintTextColor(R.color.black)
+        searchAutoComplete.setHint("Search by name or id...")
         searchAutoComplete.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
 
         // Make search bar focused and open keyboard

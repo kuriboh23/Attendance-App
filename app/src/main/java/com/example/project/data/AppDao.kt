@@ -28,6 +28,10 @@ interface CheckDao {
     @Query("SELECT * FROM check_table WHERE userId = :user_id AND date BETWEEN :startOfWeek AND :endOfWeek")
     fun getChecksByWeek(user_id: Long, startOfWeek: String, endOfWeek: String): LiveData<List<Check>>
 
+    @Query("SELECT * FROM check_table WHERE date LIKE :month || '%' AND userId = :user_id ORDER BY id ASC")
+    fun getChecksUserByMonth(month: String, user_id: Long): LiveData<List<Check>>
+
+
 }
 
 @Dao

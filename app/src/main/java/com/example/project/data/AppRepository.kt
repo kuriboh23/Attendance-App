@@ -24,6 +24,10 @@ class CheckRepository(private val attendanceDao: CheckDao) {
         return attendanceDao.getChecksByWeek(userId, startOfWeek, endOfWeek)
     }
 
+    fun getChecksUserByMonth(month: String, userId: Long): LiveData<List<Check>> {
+        return attendanceDao.getChecksUserByMonth(month, userId)
+    }
+
     fun deleteAllChecks(){
         attendanceDao.deleteAllChecks()
     }

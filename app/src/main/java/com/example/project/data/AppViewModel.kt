@@ -38,6 +38,10 @@ class CheckViewModel(application: Application) : AndroidViewModel(application) {
         return repository.getChecksByWeek(userId, startOfWeek, endOfWeek)
     }
 
+    fun getChecksUserByMonth(month: String, userId: Long): LiveData<List<Check>> {
+        return repository.getChecksUserByMonth(month, userId)
+    }
+
     fun deleteAllChecks() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAllChecks()
