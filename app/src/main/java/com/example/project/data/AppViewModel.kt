@@ -137,6 +137,12 @@ class LeaveViewModel(application: Application) : AndroidViewModel(application) {
         return repository.getLeavesByStatus(status)
     }
 
+    fun updateLeaveStatus(leaveId: Long, newStatus: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateLeaveStatus(leaveId, newStatus)
+        }
+    }
+
     fun getLeavesByMonth(monthYear: String, userId: Long): LiveData<List<Leave>> {
         return repository.getLeavesByMonth(monthYear, userId)
     }

@@ -109,4 +109,7 @@ interface LeaveDao{
 
     @Query("SELECT * FROM leave_table WHERE status = :status")
     fun getLeavesByStatus(status: String): LiveData<List<Leave>>
+
+    @Query("UPDATE leave_table SET status = :newStatus WHERE id = :leaveId")
+    suspend fun updateLeaveStatus(leaveId: Long, newStatus: String)
 }

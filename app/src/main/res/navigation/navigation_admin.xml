@@ -28,8 +28,14 @@ app:startDestination="@id/nav_home">
     tools:layout="@layout/fragment_admin_leave" />
 
 <fragment
-    android:id="@+id/nav_salary"
-    android:name="com.example.project.fragment.AdminSalary"
-    android:label="Admin Salary"
-    tools:layout="@layout/fragment_admin_salary" />
+    android:id="@+id/nav_signup"
+    android:name="com.example.project.fragment.AdminSignUp"
+    android:label="Admin Sign Up"
+    tools:layout="@layout/fragment_admin_sign_up" />
+
+    <fragment
+        android:id="@+id/nav_notify"
+        android:name="com.example.project.fragment.AdminNotification"
+        android:label="fragment_admin_notification"
+        tools:layout="@layout/fragment_admin_notification" />
 </navigation>

@@ -52,15 +52,30 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center_horizontal">
+
                     <!-- Summary Title -->
                     <TextView
                         android:id="@+id/summaryText"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_semibold"
                         android:text="Team Leave Overview"
-                        android:textColor="@color/mainColor" />
+                        android:textColor="@color/mainColor"
+                        />
 
+                    <ImageView
+                        android:id="@+id/searchUser"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/user_search"
+                        />
+                    </LinearLayout>
                     <!-- Team Statistics -->
                     <GridLayout
                         android:layout_width="match_parent"

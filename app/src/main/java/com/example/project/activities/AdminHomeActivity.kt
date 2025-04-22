@@ -37,26 +37,12 @@ class AdminHomeActivity : AppCompatActivity() {
 
         // Handle special action (sign out)
         bottomNav.setOnItemSelectedListener { item ->
-            if (item.itemId == R.id.nav_notify) {
-                signOut()
-                true
-            } else {
+
                 navController.navigate(item.itemId)
                 true
-            }
         }
     }
 
-    private fun signOut() {
-        UserPrefs.clearUserId(this)
-        UserPrefs.savedIsLoggedIn(this, false)
-
-        val intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        startActivity(intent)
-        finish()
-    }
 
     @Deprecated("Deprecated in Java")
     @SuppressLint("MissingSuperCall")

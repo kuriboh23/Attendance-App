@@ -90,7 +90,9 @@ class LeaveRepository(private val leaveDao: LeaveDao) {
     fun getLeavesByStatus(status: String): LiveData<List<Leave>> {
         return leaveDao.getLeavesByStatus(status)
     }
-
+    suspend fun updateLeaveStatus(leaveId: Long, newStatus: String) {
+        leaveDao.updateLeaveStatus(leaveId, newStatus)
+    }
 
     fun getLeaveSummary(userId: Long): Flow<LeaveSummary> {
         return combine(

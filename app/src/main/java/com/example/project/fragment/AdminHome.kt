@@ -1,6 +1,7 @@
 package com.example.project.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.project.R
 import com.example.project.UserPrefs
+import com.example.project.activities.MainActivity
 import com.example.project.data.CheckViewModel
 import com.example.project.data.UserViewModel
 import com.example.project.databinding.FragmentAdminHomeBinding
@@ -41,6 +43,10 @@ class AdminHome : Fragment() {
         binding = FragmentAdminHomeBinding.inflate(inflater, container, false)
 
         binding.tvAdminDate.text = adminDate
+
+        binding.ivAdminProfile.setOnClickListener {
+            signOut()
+        }
 
         // Show loading overlay while loading initial data
         binding.loadingOverlay.visibility = View.VISIBLE
@@ -122,6 +128,17 @@ class AdminHome : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun signOut() {
+        UserPrefs.clearUserId(requireContext())
+        UserPrefs.savedIsLoggedIn(requireContext(), false)
+
+        val intent = Intent(requireContext(), MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        requireActivity().finish()
     }
 
     fun timeToIntPair(timeString: String): Pair<Int, Int> {
