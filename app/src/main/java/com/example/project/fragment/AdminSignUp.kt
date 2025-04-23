@@ -52,7 +52,7 @@ class AdminSignUp : Fragment() {
                             requireContext().showCustomToast("Please accept the privacy policy", R.layout.error_toast)
                             return@setOnClickListener
                         }
-                        val user = User(0, firstName, lastName, email, password, role)
+                        val user = User(0, firstName, lastName, email, password, role,"0")
                         insertUser(user)
 
                         binding.nameInput.text?.clear()

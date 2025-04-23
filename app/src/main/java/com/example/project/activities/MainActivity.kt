@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         createAcountBtn= findViewById(R.id.signIn_btn)
 
         firebaseRef = FirebaseDatabase.getInstance().getReference("msg")
-        firebaseRef.setValue("Yakuza Surface")
+        firebaseRef.setValue("Dell Yakuza")
 
         guest_access.setOnClickListener {
             val intent = Intent(this, GuestActivity::class.java)
