@@ -49,9 +49,6 @@ class AdminHome : Fragment() {
             signOut()
         }
 
-        // Show loading overlay while loading initial data
-        binding.loadingOverlay.visibility = View.VISIBLE
-
         binding.teamFilter.setOnClickListener {
             showUserFilterBottomSheet()
         }
@@ -79,6 +76,8 @@ class AdminHome : Fragment() {
 
         val userId = UserPrefs.loadUserId(requireContext())
         userViewModel.getUserById(userId).observe(viewLifecycleOwner) { user ->
+            // Show loading overlay while loading initial data
+            binding.loadingOverlay.visibility = View.VISIBLE
             binding.tvAdminGreeting.text = "Hello, ${user.lastName}"
 
             binding.loadingOverlay.visibility = View.GONE

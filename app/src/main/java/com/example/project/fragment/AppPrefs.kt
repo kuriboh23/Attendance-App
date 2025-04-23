@@ -62,6 +62,7 @@ object CheckInPrefs {
 object UserPrefs{
     private const val PREF_NAME = "user_data"
     private const val KEY_USER_ID = "user_id"
+    private const val KEY_USER_UID = "user_uid"
     private const val KEY_IS_LOGGED_IN = "is_logged_in"
 
     private fun getUserPrefs(context: Context): SharedPreferences {
@@ -71,6 +72,13 @@ object UserPrefs{
     fun saveUserId(context: Context, userId: Long) {
         getUserPrefs(context).edit().apply {
             putLong(KEY_USER_ID, userId)
+            apply()
+        }
+    }
+
+    fun saveUserUid(context: Context, userId: String) {
+        getUserPrefs(context).edit().apply {
+            putString(KEY_USER_UID, userId)
             apply()
         }
     }

@@ -127,7 +127,7 @@ class Login:AppCompatActivity() {
                                     FirebaseDatabase.getInstance().getReference("User")
                                 databaseRef.child(uid).get().addOnSuccessListener { snapshot ->
                                     val firstName =
-                                        snapshot.child("firstName").getValue(String::class.java)
+                                        snapshot.child("name").getValue(String::class.java)
                                             ?: ""
                                     val lastName =
                                         snapshot.child("lastName").getValue(String::class.java)
@@ -169,7 +169,7 @@ class Login:AppCompatActivity() {
             }
     }
 
-    private fun handleLoginSuccess(user: com.example.project.data.User) {
+    private fun handleLoginSuccess(user: User) {
         val savedUserId = user.id
         UserPrefs.saveUserId(this, savedUserId)
 
