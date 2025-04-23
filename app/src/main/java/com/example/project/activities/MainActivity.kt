@@ -8,11 +8,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.project.R
 import com.example.project.UserPrefs
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var guest_access:TextView
     lateinit var createAcountBtn:Button
+
+    lateinit var firebaseRef: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +26,8 @@ class MainActivity : AppCompatActivity() {
         guest_access = findViewById(R.id.guest_access)
         createAcountBtn= findViewById(R.id.signIn_btn)
 
+        firebaseRef = FirebaseDatabase.getInstance().getReference("msg")
+        firebaseRef.setValue("Yakuza Surface")
 
         guest_access.setOnClickListener {
             val intent = Intent(this, GuestActivity::class.java)
