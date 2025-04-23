@@ -63,7 +63,6 @@ class Home : Fragment() {
     private lateinit var userViewModel: UserViewModel
     private lateinit var timeManagerViewModel: TimeManagerViewModel
 
-
     private lateinit var userId: String
 
     private val cameraPermissionLauncher =
@@ -98,7 +97,6 @@ class Home : Fragment() {
         userId = UserPrefs.loadUserId(requireContext()).toString()
 
         binding.tvDate.text = "$month $day, $year - $dayName"
-
 
         startTimeCheck(requireContext())
 
