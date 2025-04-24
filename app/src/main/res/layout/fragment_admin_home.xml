@@ -144,7 +144,7 @@
                                 android:layout_gravity="center"
                                 android:fontFamily="@font/poppins_semibold"
 
-                                android:text="5"
+                                android:text="0"
                                 android:textColor="@color/mainColor"
                                 android:textSize="22sp" />
 
@@ -181,7 +181,7 @@
                                 android:layout_gravity="center"
                                 android:fontFamily="@font/poppins_semibold"
 
-                                android:text="3"
+                                android:text="0"
                                 android:textColor="@color/status_rejected"
                                 android:textSize="22sp" />
 
@@ -218,7 +218,7 @@
                                 android:layout_gravity="center"
                                 android:fontFamily="@font/poppins_semibold"
 
-                                android:text="2"
+                                android:text="0"
                                 android:textColor="@color/status_pending"
                                 android:textSize="22sp" />
 

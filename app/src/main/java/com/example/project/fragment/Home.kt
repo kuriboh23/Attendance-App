@@ -10,7 +10,6 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -25,7 +24,9 @@ import com.example.project.data.TimeManager
 import com.example.project.data.TimeManagerViewModel
 import com.example.project.data.UserViewModel
 import com.example.project.databinding.FragmentHomeBinding
-import com.example.project.function.function.showCustomToast
+import com.example.project.function.Function.showCustomToast
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -39,7 +40,6 @@ class Home : Fragment() {
 
     private val timeFormatterHM = SimpleDateFormat("hh:mm a", Locale.getDefault())
     private val timeFormatter = SimpleDateFormat("hh:mm:ss a", Locale.getDefault())
-    private val hoursFormat = SimpleDateFormat("HH", Locale.getDefault())
     private val minutesFormat = SimpleDateFormat("mm", Locale.getDefault())
     private val dayFormat = SimpleDateFormat("dd", Locale.getDefault())
     private val monthFormat = SimpleDateFormat("MMM", Locale.getDefault())
@@ -265,9 +265,33 @@ class Home : Fragment() {
         checkOutTime: String,
         durationInSecond: Long
     ) {
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
         val check = Check(0, date, checkInTime, checkOutTime, durationInSecond, userId.toLong())
-        attendanceViewModel.addCheck(check)
-        requireContext().showCustomToast("Successfully added check!", R.layout.success_toast)
+
+        // Get the current user's UID from FirebaseAuth
+
+        if (currentUserUid != null) {
+            val firebaseRef = FirebaseDatabase.getInstance().getReference("User")
+
+            // Create a unique ID for this check entry
+            val checkKey = firebaseRef.child(currentUserUid).child("check").push().key
+
+            if (checkKey != null) {
+                firebaseRef.child(currentUserUid)
+                    .child("check")
+                    .child(checkKey)
+                    .setValue(check)
+                    .addOnSuccessListener {
+                        // You can now insert locally if you wish
+                        attendanceViewModel.addCheck(check)
+                        requireContext().showCustomToast("Check recorded successfully", R.layout.success_toast)
+                    }
+                    .addOnFailureListener {
+                        requireContext().showCustomToast("Failed to upload check", R.layout.error_toast)
+                    }
+            }
+        }
+
     }
 
     private fun startUpdatingTime() {

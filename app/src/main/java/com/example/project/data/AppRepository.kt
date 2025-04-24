@@ -41,8 +41,8 @@ class UserRepository(private val userDao: UserDao) {
         return userDao.getUserById(userId)
     }
 
-    suspend fun insertUser(user: User) {
-        userDao.insertUser(user)
+    suspend fun insertUser(user: User): Long {
+        return userDao.insertUser(user)
     }
 
     fun deleteUserById(userId: Long) {

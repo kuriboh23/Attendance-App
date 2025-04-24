@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CheckViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -63,9 +64,12 @@ class UserViewModel(application: Application): AndroidViewModel(application){
         return repository.getUserById(userId)
     }
 
-    fun insertUser(user: User) {
+    fun insertUser(user: User, onInserted: (newId: Long) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.insertUser(user)
+            val generatedId = repository.insertUser(user)
+            withContext(Dispatchers.Main) {
+                onInserted(generatedId)
+            }
         }
     }
     fun deleteUserById(userId: Long) {

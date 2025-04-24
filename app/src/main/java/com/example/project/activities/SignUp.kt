@@ -4,25 +4,24 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.project.R
 import com.example.project.data.User
 import com.example.project.data.UserViewModel
 import com.example.project.databinding.ActivitySignupBinding
-import com.example.project.function.function.showCustomToast
+import com.example.project.function.Function.showCustomToast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
-class SignUp:AppCompatActivity() {
+class SignUp: AppCompatActivity() {
 
-    lateinit var back:ImageView
-    lateinit var binding:ActivitySignupBinding
+    lateinit var back: ImageView
+    lateinit var binding: ActivitySignupBinding
 
-    lateinit var firebaseRef : DatabaseReference
+    lateinit var firebaseRef: DatabaseReference
     lateinit var auth: FirebaseAuth
 
     private lateinit var userViewModel: UserViewModel
@@ -34,6 +33,8 @@ class SignUp:AppCompatActivity() {
 
         firebaseRef = FirebaseDatabase.getInstance().getReference("User")
         auth = FirebaseAuth.getInstance()
+
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
 
         back = findViewById(R.id.arrowLeft)
 
@@ -63,29 +64,48 @@ class SignUp:AppCompatActivity() {
                             return@setOnClickListener
                         }
 
-                        // Register with Firebase Auth
                         auth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
                                     val firebaseUser: FirebaseUser? = auth.currentUser
                                     val uid = firebaseUser?.uid ?: return@addOnCompleteListener
 
-                                    val user = User(0, firstName, lastName, email, password, role, uid)
+                                    val newUser = User(0, firstName, lastName, email, password, role, uid)
 
-                                    // Save to Realtime Database
-                                    firebaseRef.child(uid).setValue(user)
-                                        .addOnSuccessListener {
-                                            this.showCustomToast("User registered successfully", R.layout.success_toast)
-                                            val intent = Intent(this, Login::class.java)
-                                            startActivity(intent)
-                                            finish()
-                                        }
-                                        .addOnFailureListener {
-                                            this.showCustomToast("Failed to save user to database", R.layout.error_toast)
+                                    val idCounterRef = FirebaseDatabase.getInstance().getReference("userIdCounter")
+                                    idCounterRef.runTransaction(object : com.google.firebase.database.Transaction.Handler {
+                                        override fun doTransaction(currentData: com.google.firebase.database.MutableData): com.google.firebase.database.Transaction.Result {
+                                            var currentId = currentData.getValue(Int::class.java) ?: 0
+                                            currentId += 1
+                                            currentData.value = currentId
+                                            return com.google.firebase.database.Transaction.success(currentData)
                                         }
 
-                                    // Save to Room DB if needed
-                                    insertUser(user)
+                                        override fun onComplete(
+                                            error: com.google.firebase.database.DatabaseError?,
+                                            committed: Boolean,
+                                            currentData: com.google.firebase.database.DataSnapshot?
+                                        ) {
+                                            if (committed) {
+                                                val generatedId = currentData?.getValue(Int::class.java) ?: 0
+                                                val userWithId = newUser.copy(id = generatedId.toLong())
+
+                                                firebaseRef.child(uid).setValue(userWithId)
+                                                    .addOnSuccessListener {
+                                                        userViewModel.insertUser(userWithId) {}
+                                                        this@SignUp.showCustomToast("User registered successfully", R.layout.success_toast)
+                                                        val intent = Intent(this@SignUp, Login::class.java)
+                                                        startActivity(intent)
+                                                        finish()
+                                                    }
+                                                    .addOnFailureListener {
+                                                        this@SignUp.showCustomToast("Failed to save user to database", R.layout.error_toast)
+                                                    }
+                                            } else {
+                                                this@SignUp.showCustomToast("Failed to generate unique user ID", R.layout.error_toast)
+                                            }
+                                        }
+                                    })
                                 } else {
                                     this.showCustomToast("Registration failed: ${task.exception?.message}", R.layout.error_toast)
                                 }
@@ -98,14 +118,8 @@ class SignUp:AppCompatActivity() {
                 }
             }
         }
-
     }
 
-    private fun insertUser(user: User) {
-        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
-        userViewModel.insertUser(user)
-        this.showCustomToast("User registered successfully", R.layout.success_toast)
-    }
     fun isValidEmail(email: String): Boolean {
         return email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }

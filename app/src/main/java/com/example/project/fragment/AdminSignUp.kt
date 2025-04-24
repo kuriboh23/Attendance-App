@@ -1,6 +1,5 @@
 package com.example.project.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.view.LayoutInflater
@@ -9,11 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.project.R
-import com.example.project.activities.Login
 import com.example.project.data.User
 import com.example.project.data.UserViewModel
 import com.example.project.databinding.FragmentAdminSignUpBinding
-import com.example.project.function.function.showCustomToast
+import com.example.project.function.Function.showCustomToast
 
 class AdminSignUp : Fragment() {
 
@@ -76,7 +74,7 @@ class AdminSignUp : Fragment() {
     }
 
     private fun insertUser(user: User) {
-        userViewModel.insertUser(user)
+        userViewModel.insertUser(user){}
         requireContext().showCustomToast("User registered successfully", R.layout.success_toast)
     }
 

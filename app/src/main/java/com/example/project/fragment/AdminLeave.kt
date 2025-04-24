@@ -26,9 +26,8 @@ import com.example.project.data.LeaveViewModel
 import com.example.project.data.User
 import com.example.project.data.UserViewModel
 import com.example.project.databinding.FragmentAdminLeaveBinding
-import com.example.project.fragment.adapters.CheckAdapter
 import com.example.project.fragment.adapters.LeaveAdapter
-import com.example.project.function.function.showCustomToast
+import com.example.project.function.Function.showCustomToast
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder

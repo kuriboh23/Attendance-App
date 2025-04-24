@@ -24,4 +24,5 @@ data class Check(
     val checkOutTime: String,
     val durationInSecond: Long,
     @ColumnInfo(name = "userId") val userId: Long
+
 )

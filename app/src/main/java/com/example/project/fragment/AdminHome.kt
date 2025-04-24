@@ -28,13 +28,14 @@ import java.util.Locale
 
 class AdminHome : Fragment() {
 
-    lateinit var binding: FragmentAdminHomeBinding
+    private lateinit var binding: FragmentAdminHomeBinding
     private lateinit var userViewModel: UserViewModel
     private lateinit var checkViewModel: CheckViewModel
     private lateinit var userAdapter: UserAdapter
-    private val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-    val adminDate = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(Date())
-    val userWithStatusList = mutableListOf<UserWithStatus>()
+
+    private val currentDate: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+    private val adminDate: String = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(Date())
+    private val userWithStatusList = mutableListOf<UserWithStatus>()
 
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onCreateView(
@@ -43,26 +44,15 @@ class AdminHome : Fragment() {
     ): View {
         binding = FragmentAdminHomeBinding.inflate(inflater, container, false)
 
+        binding.loadingOverlay.visibility = View.VISIBLE
+
         binding.tvAdminDate.text = adminDate
 
-        binding.ivAdminProfile.setOnClickListener {
-            signOut()
-        }
-
-        binding.teamFilter.setOnClickListener {
-            showUserFilterBottomSheet()
-        }
-
-       /* // Initialize UserAdapter with click callback
-        userAdapter = UserAdapter(emptyList()) { user ->
-            val bundle = Bundle().apply {
-                putLong("homeUserId", user.id)
-            }
-            findNavController().navigate(R.id.toAdminAttendance, bundle)
-        }*/
+        binding.ivAdminProfile.setOnClickListener { signOut() }
+        binding.teamFilter.setOnClickListener { showUserFilterBottomSheet() }
 
         userAdapter = UserAdapter(emptyList()) { user ->
-            val intent = Intent(requireContext(),Userdetails::class.java).apply {
+            val intent = Intent(requireContext(), Userdetails::class.java).apply {
                 putExtra("userId", user.id)
             }
             startActivity(intent)
@@ -76,16 +66,10 @@ class AdminHome : Fragment() {
 
         val userId = UserPrefs.loadUserId(requireContext())
         userViewModel.getUserById(userId).observe(viewLifecycleOwner) { user ->
-            // Show loading overlay while loading initial data
-            binding.loadingOverlay.visibility = View.VISIBLE
             binding.tvAdminGreeting.text = "Hello, ${user.lastName}"
-
-            binding.loadingOverlay.visibility = View.GONE
         }
 
         userViewModel.allUsers.observe(viewLifecycleOwner) { users ->
-
-            binding.loadingOverlay.visibility = View.VISIBLE
 
             var presentCount = 0
             var absentCount = 0
@@ -94,16 +78,15 @@ class AdminHome : Fragment() {
             val filteredUsers = users.filter { it.role == "user" }
 
             filteredUsers.forEach { user ->
-                checkViewModel.getChecksUserByDate(currentDate, user.id).observe(viewLifecycleOwner) { checks ->
+                checkViewModel.getChecksUserByDate(currentDate, user.id)
+                    .observe(viewLifecycleOwner) { checks ->
+
                         val status: String = if (checks.isNotEmpty()) {
+
                             var isLate = false
                             checks.forEach { check ->
                                 val (hourIn, _) = timeToIntPair(check.checkInTime)
-                                isLate = if ((hourIn in 9 until 13) || (hourIn in 15 until 19)) {
-                                    true
-                                } else {
-                                    false
-                                }
+                                isLate = (hourIn in 9 until 13) || (hourIn in 15 until 19)
                             }
                             if (isLate) {
                                 lateCount++
@@ -127,15 +110,25 @@ class AdminHome : Fragment() {
 
                             userAdapter.notifyDataSetChanged()
 
-                            // Hide loading overlay after initial data is loaded
-                            binding.loadingOverlay.visibility = View.GONE
+                            hideLoadingOverlayWithFade()
                         }
                     }
             }
         }
-
+        hideLoadingOverlayWithFade()
         return binding.root
     }
+
+    private fun hideLoadingOverlayWithFade() {
+        binding.loadingOverlay.animate()
+            .setStartDelay(50)
+            .setDuration(100)
+            .withEndAction {
+                binding.loadingOverlay.visibility = View.GONE
+            }
+            .start()
+    }
+
 
     private fun signOut() {
         UserPrefs.clearUserId(requireContext())
@@ -148,18 +141,15 @@ class AdminHome : Fragment() {
         requireActivity().finish()
     }
 
-    fun timeToIntPair(timeString: String): Pair<Int, Int> {
+    private fun timeToIntPair(timeString: String): Pair<Int, Int> {
         val parts = timeString.split(" ")
         val timeParts = parts[0].split(":")
         var hours = timeParts[0].toInt()
         val minutes = timeParts[1].toInt()
         val isPM = parts[1].equals("PM", ignoreCase = true)
 
-        if (isPM && hours != 12) {
-            hours += 12
-        } else if (!isPM && hours == 12) {
-            hours = 0
-        }
+        if (isPM && hours != 12) hours += 12
+        else if (!isPM && hours == 12) hours = 0
 
         return Pair(hours, minutes)
     }
@@ -191,7 +181,6 @@ class AdminHome : Fragment() {
 
                 val newUsersList = userWithStatusList.filter { it.status == status }
                 userAdapter.updateUsers(newUsersList)
-
                 dialog.dismiss()
             }
         }

@@ -2,14 +2,12 @@ package com.example.project.fragment
 
 import TeamUserAdapter
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -20,10 +18,8 @@ import com.example.project.data.CheckViewModel
 import com.example.project.data.UserViewModel
 import com.example.project.databinding.FragmentAdminAttendanceBinding
 import com.example.project.fragment.adapters.CheckAdapter
-import com.example.project.function.function.showCustomToast
+import com.example.project.function.Function.showCustomToast
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.util.Calendar
