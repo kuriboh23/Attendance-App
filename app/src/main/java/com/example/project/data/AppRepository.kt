@@ -75,9 +75,16 @@ class LeaveRepository(private val leaveDao: LeaveDao) {
     fun getAllUserLeaves(userId: Long): LiveData<List<Leave>> {
         return leaveDao.getAllUserLeaves(userId)
     }
-
     suspend fun insertLeave(leave: Leave) {
         leaveDao.insertLeave(leave)
+    }
+
+    suspend fun insertNLeave(leave: Leave): Long {
+        return leaveDao.insertNLeave(leave)
+    }
+
+    suspend fun getLeaveUser(leaveId: Long): List<Leave> {
+        return leaveDao.getLeaveUser(leaveId)
     }
 
     suspend fun deleteLeave(leave: Leave) {
@@ -113,4 +120,19 @@ class LeaveRepository(private val leaveDao: LeaveDao) {
             )
         }
     }
+
+    suspend fun deleteAllUserLeaves(userId: Long) {
+        leaveDao.deleteAllUserLeaves(userId)
+    }
+
+    fun deleteLeavesForUser(userId: Long) {
+        leaveDao.deleteLeavesForUser(userId)
+    }
+
+    suspend fun insertIfNotExists(leave: Leave) {
+        leaveDao.insertIfNotExists(leave)
+    }
+
+
+
 }

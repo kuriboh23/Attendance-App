@@ -16,7 +16,11 @@ import com.example.project.UserPrefs
 import com.example.project.data.Leave
 import com.example.project.data.LeaveViewModel
 import com.example.project.databinding.ActivityApplyLeaveBinding
+import com.example.project.function.Function
+import com.example.project.function.Function.showCustomToast
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -116,7 +120,6 @@ class ApplyLeave : AppCompatActivity() {
     private fun checkStoragePermission() {
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
-                // Android 13+: Check granular permissions
                 if (ContextCompat.checkSelfPermission(
                         this,
                         android.Manifest.permission.READ_MEDIA_IMAGES
@@ -207,9 +210,43 @@ class ApplyLeave : AppCompatActivity() {
 
         // Save to database
         val currentDateStr = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date(now))
-        val leave = Leave(0,currentDateStr,startDate,endDate,type,note,"Pending",savedFilePath,userId)
-        leaveViewModel.insertLeave(leave)
 
-        finish()
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+
+        // Insert the leave into the database
+        if (currentUserUid != null) {
+            val firebaseRef = FirebaseDatabase.getInstance().getReference("User")
+            val leaveKey = firebaseRef.child(currentUserUid).child("leave").push().key
+
+            if (leaveKey != null) {
+                val leave = Leave(
+                    id = 0, // Room will auto-generate this
+                    date = currentDateStr,
+                    startDate = startDate,
+                    endDate = endDate,
+                    type = type,
+                    note = note,
+                    status = "Pending",
+                    attachmentPath = savedFilePath,
+                    userId = userId,
+                    uid = leaveKey
+                )
+
+                leaveViewModel.insertNLeave(leave) { insertedLeaveId ->
+                    val updatedLeave = leave.copy(id = insertedLeaveId)
+                    firebaseRef.child(currentUserUid).child("leave").child(leaveKey).setValue(updatedLeave)
+                        .addOnSuccessListener {
+                            showCustomToast("Leave request submitted", R.layout.success_toast)
+                            finish()
+                        }
+                        .addOnFailureListener {
+                            showCustomToast("Failed to sync with Firebase", R.layout.error_toast)
+                        }
+                }
+
+            }
+
+        }
+
     }
 }

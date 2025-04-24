@@ -6,253 +6,233 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
-
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.*
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
 import com.example.project.R
+import com.example.project.data.*
 import com.example.project.data.Leave
-import com.example.project.data.LeaveViewModel
-import com.example.project.data.User
-import com.example.project.data.UserViewModel
 import com.example.project.databinding.FragmentAdminLeaveBinding
 import com.example.project.fragment.adapters.LeaveAdapter
 import com.example.project.function.Function.showCustomToast
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.database.FirebaseDatabase
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Locale
-
+import java.util.*
 
 class AdminLeave : Fragment() {
+
     private lateinit var binding: FragmentAdminLeaveBinding
-    private lateinit var leaveAdapter: LeaveAdapter
     private lateinit var leaveViewModel: LeaveViewModel
     private lateinit var userViewModel: UserViewModel
     private lateinit var teamUserAdapter: TeamUserAdapter
+    private lateinit var leaveAdapter: LeaveAdapter
 
-    private var allLeaves: List<Leave> = emptyList() // Store unfiltered leaves
-    private var userMap: Map<Long, User> = emptyMap() // Store user map
-    private var currentFilterType: String? = null // Store the current type filter ("All", "Casual", "Sick")
+    private var allLeaves: List<Leave> = emptyList()
+    private var userMap: Map<Long, User> = emptyMap()
+
+    private var currentFilterType: String? = null
+    private var currentStatusFilter: String? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentAdminLeaveBinding.inflate(inflater, container, false)
-
-        leaveViewModel = ViewModelProvider(this)[LeaveViewModel::class.java]
-        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
-
-
-        // Observe leaves and users once
-        leaveViewModel.allLeaves.observe(viewLifecycleOwner) { leaves ->
-            allLeaves = leaves // Store the unfiltered leaves
-            val totalLeaves = leaves.size
-            val pendingApprovals = leaves.filter { it.status == "Pending" }.size
-            val casualLeaves = leaves.filter { it.type == "Casual" }.size
-            val sickLeaves = leaves.filter { it.type == "Sick" }.size
-
-            binding.tvTotalLeaves.text = totalLeaves.toString()
-            binding.tvPendingApprovals.text = pendingApprovals.toString()
-            binding.tvCasualLeaves.text = casualLeaves.toString()
-            binding.tvSickLeaves.text = sickLeaves.toString()
-
-            userViewModel.allUsers.observe(viewLifecycleOwner) { users ->
-                userMap = users.associateBy { it.id } // Store the user map
-                updateAdapterWithFilters() // Update the adapter with the current filters
-            }
-        }
-
-        val buttonAll = binding.btnAll
-        val buttonCasual = binding.btnCasual
-        val buttonSick = binding.btnSick
-
-        binding.leaveFilter.setOnClickListener {
-            showLeaveFilterBottomSheet()
-        }
-
-        // Set click listeners for each button
-        buttonAll.setOnClickListener {
-            setButtonState(buttonAll)
-            currentFilterType = null // No type filter (show all)
-            updateAdapterWithFilters()
-        }
-        buttonCasual.setOnClickListener {
-            setButtonState(buttonCasual)
-            currentFilterType = "Casual"
-            updateAdapterWithFilters()
-        }
-        buttonSick.setOnClickListener {
-            setButtonState(buttonSick)
-            currentFilterType = "Sick"
-            updateAdapterWithFilters()
-        }
-
-        // Set "ALL" as the default highlighted button
-        setButtonState(buttonAll)
-
-        binding.searchUser.setOnClickListener {
-            showUseSearchBottomSheet()
-        }
-
+        initViewModels()
+        setupObservers()
+        setupUI()
+        syncLeavesFromFirebaseToRoom()
         return binding.root
     }
 
-    private var currentStatusFilter: String? = null // Store the current status filter
+    private fun initViewModels() {
+        leaveViewModel = ViewModelProvider(this)[LeaveViewModel::class.java]
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    @SuppressLint("MissingInflatedId")
+    private fun setupObservers() {
+        leaveViewModel.allLeaves.observe(viewLifecycleOwner) { leaves ->
+            allLeaves = leaves
+            updateStatistics(leaves)
+            userViewModel.allUsers.observe(viewLifecycleOwner) { users ->
+                userMap = users.associateBy { it.id }
+                updateAdapterWithFilters()
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setupUI() {
+        with(binding) {
+            btnAll.setOnClickListener { applyTypeFilter(null, btnAll) }
+            btnCasual.setOnClickListener { applyTypeFilter("Casual", btnCasual) }
+            btnSick.setOnClickListener { applyTypeFilter("Sick", btnSick) }
+            leaveFilter.setOnClickListener { showLeaveFilterBottomSheet() }
+            searchUser.setOnClickListener { showUserSearchBottomSheet() }
+            setButtonState(btnAll)
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateStatistics(leaves: List<Leave>) = with(binding) {
+        tvTotalLeaves.text = leaves.size.toString()
+        tvPendingApprovals.text = leaves.count { it.status == "Pending" }.toString()
+        tvCasualLeaves.text = leaves.count { it.type == "Casual" }.toString()
+        tvSickLeaves.text = leaves.count { it.type == "Sick" }.toString()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun updateAdapterWithFilters() {
+        var filtered = allLeaves
+
+        currentFilterType?.let { filterType ->
+            filtered = filtered.filter { leave -> leave.type == filterType }
+        }
+
+        currentStatusFilter?.let { statusFilter ->
+            filtered = filtered.filter { leave -> leave.status == statusFilter }
+        }
+
+        leaveAdapter = LeaveAdapter { leave -> showLeaveDetailsBottomSheet(leave) }
+        binding.rvLeaves.adapter = leaveAdapter
+        leaveAdapter.setData(filtered, userMap)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun applyTypeFilter(type: String?, button: MaterialButton) {
+        currentFilterType = type
+        setButtonState(button)
+        updateAdapterWithFilters()
+    }
+
+    private fun setButtonState(selected: MaterialButton) = with(binding) {
+        listOf(btnAll, btnCasual, btnSick).forEach {
+            it.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
+            it.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.gray_light)
+        }
+        selected.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+        selected.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.mainColor)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun showLeaveFilterBottomSheet() {
         val dialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.bottom_sheet_admin_leave_filter, null)
-        dialog.setCanceledOnTouchOutside(true)
         dialog.setContentView(view)
         dialog.show()
 
-        val leaveStatusGroup = view.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.leaveStatusGroup)
+        val group = view.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.leaveStatusGroup)
         val reset = view.findViewById<MaterialButton>(R.id.reset)
         val apply = view.findViewById<MaterialButton>(R.id.apply)
 
         reset.setOnClickListener {
-            leaveStatusGroup.clearChecked()
+            group.clearChecked()
             currentStatusFilter = null
             updateAdapterWithFilters()
         }
 
         apply.setOnClickListener {
-            if (leaveStatusGroup.checkedButtonId != -1) {
-                currentStatusFilter = when (leaveStatusGroup.checkedButtonId) {
-                    R.id.leavePending -> "Pending"
-                    R.id.leaveApproved -> "Approved"
-                    R.id.leaveRejected -> "Rejected"
-                    else -> null
-                }
-                updateAdapterWithFilters()
-                dialog.dismiss()
+            currentStatusFilter = when (group.checkedButtonId) {
+                R.id.leavePending -> "Pending"
+                R.id.leaveApproved -> "Approved"
+                R.id.leaveRejected -> "Rejected"
+                else -> null
             }
+            updateAdapterWithFilters()
+            dialog.dismiss()
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun updateAdapterWithFilters() {
-        var filteredLeaves = allLeaves
-
-        // Apply type filter (All, Casual, Sick)
-        currentFilterType?.let { type ->
-            filteredLeaves = filteredLeaves.filter { it.type == type }
-        }
-
-        // Apply status filter (Pending, Approved, Rejected)
-        currentStatusFilter?.let { status ->
-            filteredLeaves = filteredLeaves.filter { it.status == status }
-        }
-        leaveAdapter = LeaveAdapter { leave ->
-            // Show bottom sheet with leave details
-            showLeaveDetailsBottomSheet(leave)
-        }
-        binding.rvLeaves.adapter = leaveAdapter
-
-        leaveAdapter.setData(filteredLeaves, userMap)
-    }
-
-    private fun setButtonState(selectedButton: MaterialButton) {
-        binding.btnAll.apply {
-            backgroundTintList = ContextCompat.getColorStateList(context, R.color.gray_light)
-            setTextColor(ContextCompat.getColor(context, android.R.color.black))
-        }
-        binding.btnCasual.apply {
-            backgroundTintList = ContextCompat.getColorStateList(context, R.color.gray_light)
-            setTextColor(ContextCompat.getColor(context, android.R.color.black))
-        }
-        binding.btnSick.apply {
-            backgroundTintList = ContextCompat.getColorStateList(context, R.color.gray_light)
-            setTextColor(ContextCompat.getColor(context, android.R.color.black))
-        }
-
-        selectedButton.apply {
-            backgroundTintList = ContextCompat.getColorStateList(context, R.color.mainColor)
-            setTextColor(ContextCompat.getColor(context, android.R.color.white))
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    @SuppressLint("MissingInflatedId")
     private fun showLeaveDetailsBottomSheet(leave: Leave) {
         val dialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.bottom_sheet_admin_leave_details, null)
-        dialog.setCanceledOnTouchOutside(true)
         dialog.setContentView(view)
-
-        val tvLeaveDate = view.findViewById<TextView>(R.id.tvLeaveDate)
-        val ivUser = view.findViewById<ImageView>(R.id.ivUser)
-        val tvFullName = view.findViewById<TextView>(R.id.tvFullName)
-        val tvStartDate = view.findViewById<TextView>(R.id.tvStartDate)
-        val tvEndDate = view.findViewById<TextView>(R.id.tvEndDate)
-        val tvType = view.findViewById<TextView>(R.id.tvType)
-        val tvNote = view.findViewById<TextView>(R.id.tvNote)
-        val btnAttachment = view.findViewById<MaterialButton>(R.id.btnAttachment)
-        val btnReject = view.findViewById<MaterialButton>(R.id.btnReject)
-        val btnApprove = view.findViewById<MaterialButton>(R.id.btnApprove)
+        dialog.setCanceledOnTouchOutside(true)
 
         val user = userMap[leave.userId]
-        if (user != null) {
-            tvFullName.text = "${user.lastName} ${user.name}"
-        }
+        view.findViewById<TextView>(R.id.tvFullName).text = "${user?.lastName} ${user?.name}"
+        view.findViewById<TextView>(R.id.tvLeaveDate).text = formatDate(leave.date)
+        view.findViewById<TextView>(R.id.tvStartDate).text = formatDate(leave.startDate)
+        view.findViewById<TextView>(R.id.tvEndDate).text = formatDate(leave.endDate)
+        view.findViewById<TextView>(R.id.tvType).text = leave.type
+        view.findViewById<TextView>(R.id.tvNote).text = leave.note
 
-        tvLeaveDate.text = getDayAbbreviation(leave.date)
-        tvStartDate.text = getDayAbbreviation(leave.startDate)
-        tvEndDate.text = getDayAbbreviation(leave.endDate)
-        tvType.text = leave.type
-        tvNote.text = leave.note
+        val btnApprove = view.findViewById<MaterialButton>(R.id.btnApprove)
+        val btnReject = view.findViewById<MaterialButton>(R.id.btnReject)
 
-        btnAttachment.setOnClickListener {
-            // Handle attachment button click
-        }
-
-        // Only allow action if status is "Pending"
-        if (leave.status != "Pending") {
-            btnReject.visibility = View.GONE
-            btnApprove.visibility = View.GONE
-        } else {
-            btnReject.setOnClickListener {
-                showConfirmationDialog("Reject this leave request?",dialog) {
-                    leave.status = "Rejected"
-                    leaveViewModel.updateLeaveStatus(leave.id, leave.status)
-                    dialog.dismiss()
-                }
-            }
-
+        if (leave.status == "Pending") {
             btnApprove.setOnClickListener {
-                showConfirmationDialog("Approve this leave request?",dialog) {
-                    leave.status = "Approved"
-                    leaveViewModel.updateLeaveStatus(leave.id, leave.status)
-                    dialog.dismiss()
-                }
+                updateLeaveStatus("Approved", leave, user?.uid ?: "", dialog)
             }
+            btnReject.setOnClickListener {
+                updateLeaveStatus("Rejected", leave, user?.uid ?: "", dialog)
+            }
+        } else {
+            btnApprove.visibility = View.GONE
+            btnReject.visibility = View.GONE
         }
 
         dialog.show()
     }
 
-    // Helper function to show confirmation dialog
-    private fun showConfirmationDialog(message: String,dialog: BottomSheetDialog, onConfirm: () -> Unit) {
+    private fun updateLeaveStatus(newStatus: String, leave: Leave, uid: String, dialog: BottomSheetDialog) {
+        showConfirmationDialog("Confirm to $newStatus this leave?", dialog) {
+            leave.status = newStatus
+            leaveViewModel.updateLeaveStatus(leave.id, newStatus)
+
+            updateLeaveInFirebase(leave, uid)
+            dialog.dismiss()
+        }
+    }
+
+    private fun updateLeaveInFirebase(leave: Leave, userUid: String) {
+        val leaveRef = FirebaseDatabase.getInstance()
+            .getReference("User/$userUid/leave")
+
+        leaveRef.get().addOnSuccessListener { snapshot ->
+            for (child in snapshot.children) {
+                if (child.child("uid").value == leave.uid) {
+                    child.ref.child("status").setValue(leave.status)
+                    break
+                }
+            }
+        }
+    }
+
+    private fun syncLeavesFromFirebaseToRoom() {
+        val db = FirebaseDatabase.getInstance().getReference("User")
+
+        db.get().addOnSuccessListener { usersSnapshot ->
+            for (userSnapshot in usersSnapshot.children) {
+                val userUid = userSnapshot.key ?: continue
+                val leavesSnapshot = userSnapshot.child("leave")
+
+                for (leaveSnap in leavesSnapshot.children) {
+                    val leave = leaveSnap.getValue(Leave::class.java)
+                    leave?.let {
+                        if (it.status == "Pending") {
+                            leaveViewModel.insertIfNotExists(it)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showConfirmationDialog(msg: String, dialog: BottomSheetDialog, onConfirm: () -> Unit) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Confirmation")
-            .setMessage(message)
+            .setMessage(msg)
             .setIcon(R.drawable.error_red)
             .setPositiveButton("Confirm") { _, _ ->
                 onConfirm()
@@ -265,84 +245,64 @@ class AdminLeave : Fragment() {
             .show()
     }
 
-
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getDayAbbreviation(dateString: String): String {
-        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
-        val date = LocalDate.parse(dateString, inputFormatter)
-        val dayFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH) // "EEE" gives "Fri"
-        return date.format(dayFormatter)
+    private fun formatDate(dateStr: String): String {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
+        return LocalDate.parse(dateStr, formatter).format(DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("RestrictedApi")
-    private fun showUseSearchBottomSheet() {
+    private fun showUserSearchBottomSheet() {
         val dialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.bottom_sheet_user_search, null)
-        dialog.setCanceledOnTouchOutside(true)
         dialog.setContentView(view)
         dialog.show()
 
         val searchView = view.findViewById<SearchView>(R.id.search_bar)
-        val rvTeamAttendance = view.findViewById<RecyclerView>(R.id.rvTeamAttendance)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.rvTeamAttendance)
 
-        // Customize search view appearance
-        val searchAutoComplete = searchView.findViewById<androidx.appcompat.widget.SearchView.SearchAutoComplete>(
-            androidx.appcompat.R.id.search_src_text
-        )
-        searchAutoComplete.setTextColor(Color.BLACK)
-        searchAutoComplete.setHintTextColor(Color.BLACK)
-        searchAutoComplete.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-
-        // Make search bar focused and open keyboard
-        searchView.isIconified = false
-        searchView.requestFocus()
-
-        // RecyclerView setup
-        teamUserAdapter = TeamUserAdapter(emptyList()){ user ->
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        teamUserAdapter = TeamUserAdapter(emptyList()) { user ->
             dialog.dismiss()
-            val userId = user.id
-
-            userViewModel.getUserById(userId).observe(viewLifecycleOwner) { user ->
-                binding.mainTitle.text = "${user.lastName} Leaves"
-            }
-            // Fetch initial checks
-            leaveViewModel.getAllUserLeaves(userId).observe(viewLifecycleOwner) { leaves ->
-                // Show loading overlay while loading initial data
-                    binding.loadingOverlay.visibility = View.VISIBLE
-
-                    allLeaves = leaves
-                /*println("Leaves: $leaves")
-                println("Leaves: $allLeaves")*/
-                    updateAdapterWithFilters()
-                    // Hide loading overlay after initial data is loaded
-                    binding.loadingOverlay.visibility = View.GONE
-                }
-
+            updateUserLeaves(user)
         }
-        rvTeamAttendance.layoutManager = LinearLayoutManager(requireContext())
-        rvTeamAttendance.adapter = teamUserAdapter
+        recyclerView.adapter = teamUserAdapter
 
         userViewModel.allUsers.observe(viewLifecycleOwner) { users ->
-            // Show loading overlay while loading initial data
             binding.loadingOverlay.visibility = View.VISIBLE
-
-            val filteredUsers = users.filter { it.role == "user" }
-            teamUserAdapter.updateUsers(filteredUsers)
-
-            // Hide loading overlay after initial data is loaded
+            teamUserAdapter.updateUsers(users.filter { it.role == "user" })
             binding.loadingOverlay.visibility = View.GONE
         }
 
+        setupSearchAppearance(searchView)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean = true
-            override fun onQueryTextChange(newText: String?): Boolean {
-                teamUserAdapter.filterUsers(newText.orEmpty())
-                return true
-            }
+            override fun onQueryTextSubmit(query: String?) = true
+            override fun onQueryTextChange(newText: String?) = teamUserAdapter.filterUsers(newText.orEmpty()).let { true }
         })
-
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun updateUserLeaves(user: User) {
+        userViewModel.getUserById(user.id).observe(viewLifecycleOwner) {
+            binding.mainTitle.text = "${it.lastName} Leaves"
+        }
+        leaveViewModel.getAllUserLeaves(user.id).observe(viewLifecycleOwner) { leaves ->
+            binding.loadingOverlay.visibility = View.VISIBLE
+            allLeaves = leaves
+            updateAdapterWithFilters()
+            binding.loadingOverlay.visibility = View.GONE
+        }
+    }
 
+    private fun setupSearchAppearance(searchView: SearchView) {
+        val textView = searchView.findViewById<AutoCompleteTextView>(
+            resources.getIdentifier("search_src_text", "id", requireContext().packageName)
+        )
+        textView.setTextColor(Color.BLACK)
+        textView.setHintTextColor(Color.BLACK)
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+        searchView.isIconified = false
+        searchView.requestFocus()
+    }
 }

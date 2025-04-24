@@ -14,17 +14,31 @@ import androidx.room.PrimaryKey
             childColumns = ["userId"],
             onDelete = ForeignKey.CASCADE
         )
-
     ]
 )
 data class Leave(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val date: String,
-    val startDate: String,
-    val endDate: String,
-    val type: String,
-    val note: String,
-    var status: String,
-    val attachmentPath: String?,
-    @ColumnInfo(name = "userId") val userId: Long
-)
+    val date: String = "",
+    val startDate: String = "",
+    val endDate: String = "",
+    val type: String = "",
+    val note: String = "",
+    var status: String = "",
+    val attachmentPath: String? = "",
+    @ColumnInfo(name = "userId") val userId: Long,
+    val uid: String = ""
+) {
+    // No-argument constructor for Firebase
+    constructor() : this(
+        id = 0,
+        date = "",
+        startDate = "",
+        endDate = "",
+        type = "",
+        note = "",
+        status = "",
+        attachmentPath = "",
+        userId = 0,
+        uid = ""
+    )
+}

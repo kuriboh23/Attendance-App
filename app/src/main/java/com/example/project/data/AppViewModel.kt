@@ -121,11 +121,24 @@ class LeaveViewModel(application: Application) : AndroidViewModel(application) {
     fun getAllUserLeaves(userId: Long): LiveData<List<Leave>> {
         return repository.getAllUserLeaves(userId)
     }
+
+    suspend fun getLeaveUser(userId: Long): List<Leave>{
+        return repository.getLeaveUser(userId)
+    }
+
     fun insertLeave(leave: Leave) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.insertLeave(leave)
         }
     }
+
+    fun insertNLeave(leave: Leave, onInserted: (Long) -> Unit) {
+        viewModelScope.launch {
+            val id = repository.insertNLeave(leave)
+            onInserted(id)
+        }
+    }
+
 
     fun deleteLeave(leave: Leave) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -154,4 +167,24 @@ class LeaveViewModel(application: Application) : AndroidViewModel(application) {
     fun getLeavesByMonth(monthYear: String, userId: Long): LiveData<List<Leave>> {
         return repository.getLeavesByMonth(monthYear, userId)
     }
+
+    fun deleteAllUserLeaves(userId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllUserLeaves(userId)
+        }
+    }
+    fun deleteLeavesForUser(userId: Long, onDeleted: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteLeavesForUser(userId)
+            withContext(Dispatchers.Main) {
+                onDeleted()
+            }
+        }
+    }
+    fun insertIfNotExists(leave: Leave) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.insertIfNotExists(leave)
+        }
+    }
+
 }

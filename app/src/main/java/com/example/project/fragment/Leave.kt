@@ -26,10 +26,21 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class Leave : Fragment() {
     private lateinit var binding: FragmentLeaveBinding
@@ -62,6 +73,46 @@ class Leave : Fragment() {
             }
         }
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val userId = UserPrefs.loadUserId(requireContext())
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        val leavesRef = FirebaseDatabase.getInstance().getReference("User").child(uid).child("leave")
+
+        leavesRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val updatedLeaves = mutableListOf<Leave>()
+                for (child in snapshot.children) {
+                    val leave = Leave(
+                        id = 0,
+                        date = child.child("date").getValue(String::class.java) ?: "",
+                        type = child.child("type").getValue(String::class.java) ?: "",
+                        status = child.child("status").getValue(String::class.java) ?: "",
+                        note = child.child("note").getValue(String::class.java) ?: "",
+                        attachmentPath = child.child("attachmentPath").getValue(String::class.java),
+                        startDate = child.child("startDate").getValue(String::class.java) ?: "",
+                        endDate = child.child("endDate").getValue(String::class.java) ?: "",
+                        userId = userId,
+                        uid = child.key ?: ""
+                    )
+                    updatedLeaves.add(leave)
+                }
+
+                // First clear existing Room entries for this user
+                leaveViewModel.deleteLeavesForUser(userId) {
+                    updatedLeaves.forEach { leaveViewModel.insertLeave(it) }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Error syncing leaves", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -245,4 +296,5 @@ class Leave : Fragment() {
             Toast.makeText(requireContext(), "Unable to open file", Toast.LENGTH_SHORT).show()
         }
     }
+
 }

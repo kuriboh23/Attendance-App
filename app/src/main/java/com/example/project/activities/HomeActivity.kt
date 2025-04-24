@@ -7,10 +7,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.project.R
 import com.example.project.UserPrefs
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.color.DynamicColors
+import java.util.concurrent.TimeUnit
 
 class HomeActivity : AppCompatActivity() {
 
@@ -46,6 +52,7 @@ class HomeActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun signOut() {
         UserPrefs.clearUserId(this)

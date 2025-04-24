@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
@@ -73,14 +74,20 @@ interface TimeManagerDao {
 
 @Dao
 interface LeaveDao{
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLeave(leave: Leave):Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertNLeave(leave: Leave):Long
 
     @Query("SELECT * FROM leave_table ORDER BY id ASC")
     fun getAllLeaves():LiveData<List<Leave>>
 
     @Query("SELECT * FROM leave_table WHERE :user_id == userId ORDER BY id ASC")
     fun getAllUserLeaves(user_id:Long):LiveData<List<Leave>>
+
+    @Query("SELECT * FROM leave_table WHERE userId = :userId")
+    suspend fun getLeaveUser(userId: Long): List<Leave>
 
     @Delete
     suspend fun deleteLeave(leave: Leave)
@@ -116,4 +123,14 @@ interface LeaveDao{
 
     @Query("UPDATE leave_table SET status = :newStatus WHERE id = :leaveId")
     suspend fun updateLeaveStatus(leaveId: Long, newStatus: String)
+
+    @Query("DELETE FROM leave_table WHERE userId = :userId")
+    suspend fun deleteAllUserLeaves(userId: Long)
+
+    @Query("DELETE FROM leave_table WHERE userId = :userId")
+    fun deleteLeavesForUser(userId: Long)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertIfNotExists(leave: Leave)
+
 }

@@ -269,7 +269,6 @@ class Home : Fragment() {
         val check = Check(0, date, checkInTime, checkOutTime, durationInSecond, userId.toLong())
 
         // Get the current user's UID from FirebaseAuth
-
         if (currentUserUid != null) {
             val firebaseRef = FirebaseDatabase.getInstance().getReference("User")
 

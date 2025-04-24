@@ -83,6 +83,10 @@ object UserPrefs{
         }
     }
 
+    fun loadUserUid(context: Context): String? {
+        return getUserPrefs(context).getString(KEY_USER_UID, null)
+    }
+
     fun loadUserId(context: Context): Long {
         return getUserPrefs(context).getLong(KEY_USER_ID, 0L)
     }
